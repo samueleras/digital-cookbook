@@ -33,7 +33,7 @@ app.get('/about', (req, res) => {
 
 // login
 app.get('/login', (req, res) => {
-    res.render('login', { title: 'Login/SignUp', filename: 'login', style: 'none', js: 'none' });
+    res.render('login', { title: 'Login/SignUp', filename: 'login', style: 'yes', js: 'none' });
 });
 
 // create a new recipes (only for logged in users)
