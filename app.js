@@ -11,10 +11,19 @@ app.set('view engine', 'ejs');
 // listen for requests on localhost:3000
 app.listen(3000);
 
+// static files
+app.use(express.static('public'));
+
+// Is there middleware for Sessions? Get user id ??
+
+// auth-middleware to check if user is logged in
+/* app.use( () => {
+    auth
+}); */
 
 // home page for everyone to see, with everyones recipes
 app.get('/', (req, res) => {
-    res.render('index', { title: 'Home' });
+    res.render('index', { title: 'Home', filename: 'home' });
 });
 
 // informatin of how the site works
