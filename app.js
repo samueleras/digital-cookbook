@@ -23,35 +23,35 @@ app.use(express.static('public'));
 
 // home page for everyone to see, with everyones recipes
 app.get('/', (req, res) => {
-    res.render('index', { title: 'Home', filename: 'home' });
+    res.render('index', { title: 'Home', filename: 'home', style: 'yes', js: 'none' });
 });
 
 // informatin of how the site works
 app.get('/about', (req, res) => {
-    res.render('about', { title: 'About' });
+    res.render('about', { title: 'About', filename: 'about', style: 'none', js: 'none' });
 });
 
 // login
 app.get('/login', (req, res) => {
-    res.render('login', { title: 'Login/SignUp' });
+    res.render('login', { title: 'Login/SignUp', filename: 'login', style: 'none', js: 'none' });
 });
 
 // create a new recipes (only for logged in users)
 app.get('/create', (req, res) => {
-    res.render('create', { title: 'Create Recipe' });
+    res.render('create', { title: 'Create Recipe', filename: 'create', style: 'none', js: 'none' });
 });
 
 // list own recipes (only for logged in users)
 app.get('/my-recipes', (req, res) => {
-    res.render('my-recipes', { title: 'My Recipes' });
+    res.render('my-recipes', { title: 'My Recipes', filename: 'my-recipes', style: 'none', js: 'none' });
 });
 
 // list recipes of other people that you saved/liked
 /* app.get('/saved', (req, res) => {
-    res.render('saved', { title: 'Saved Recipes' });
+    res.render('saved', { title: 'Saved Recipes', filename: 'saved', style: 'none', js: 'none' });
 }); */
 
 // errorpage
 app.use((req, res) => {
-    res.status(404).render('404', { title: 'Error - 404' });
+    res.status(404).render('404', { title: 'Error - 404', filename: '404', style: 'none', js: 'none' });
 });
