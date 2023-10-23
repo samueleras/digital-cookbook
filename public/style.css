@@ -1,0 +1,24 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Lato", sans-serif;
+}
+
+:root {
+    --gray: rgba(218, 224, 230, 1);
+    --white: rgba(247, 247, 245, 1);
+    --orange: rgba(219, 84, 50, 1);
+    --darkgray: rgba(85, 85, 87, 1);
+}
+
+h1 {
+    font-size: 3rem;
+    text-align: center;
+}
+
+p {
+    font-size: 1.7rem;
+}
