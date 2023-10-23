@@ -1,14 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-    <%- include('./partials/head.ejs') %>
-<body>
+<%- include('./partials/head.ejs') %>
 
-    <%- include('./partials/nav.ejs') %>
+    <body>
 
-    <h1>Test</h1>
-    
-    
-    <%- include('./partials/footer.ejs') %>
+            <main>
 
-</body>
-</html> 
+                <form id="formlogin" class="form" data-visible="true" action=""><!-- Anfang Formular -->
+
+                    <h1>Login</h1>
+
+                    <!-- USERNAME -->
+                    <div class="input-control">
+                        <label for="user">Username</label></td>
+                        <input type="text" id="user" name="user">
+                        <div class="errormessage"></div>
+                    </div>
+                    <!-- PASSWORD -->
+                    <div class="input-control">
+                        <label for="password"> Password </label>
+                        <input type="password" id="password" name="password">
+                        <div class="errormessage"></div>
+                    </div>
+
+                    <!-- Formular absenden -->
+                    <button type="submit">Login</button>
+
+                </form> <!-- Formular Ende -->
+
+                <form id="formsignup" class="form" data-visible="false"><!-- Anfang Formular -->
+
+                    <h1>Sign Up</h1>
+
+                    <!-- USERNAME -->
+                    <div class="input-control">
+                        <label for="newuser">Username</label></td>
+                        <input type="text" id="newuser" name="newuser">
+                        <div class="errormessage"></div>
+                    </div>
+                    <!-- PASSWORD -->
+                    <div class="input-control">
+                        <label for="newpassword"> Password </label>
+                        <input type="password" id="newpassword" name="newpassword">
+                        <div class="errormessage"></div>
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div class="input-control">
+                        <label for="newpassword2">Confirm Password </label>
+                        <input type="password" id="newpassword2" name="newpassword2">
+                        <div class="errormessage"></div>
+                    </div>
+
+                    <!-- Formular absenden -->
+                    <button type="submit">Sign Up</button>
+
+                </form> <!-- Formular Ende -->
+
+
+                <div id="switchcontainer">
+                    <button id="switchLoginSignup">Sign Up</button>
+                </div>
+
+            </main>
+
+
+            <%- include('./partials/footer.ejs') %>
+
+    </body>
+
+</html>
