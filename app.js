@@ -5,6 +5,9 @@ const express = require('express');
 // express app
 const app = express();
 
+// register view engine
+app.set('view engine', 'ejs');
+
 // listen for requests on localhost:3000
 app.listen(3000);
 
