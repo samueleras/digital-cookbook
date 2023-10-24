@@ -32,6 +32,7 @@ app.use(express.static('public'));
 
 // home page for everyone to see, with everyones recipes
 app.get('/', (req, res) => {
+/*     console.log(req.session); */
     Recipe.find().sort({ createdAt: -1 })
         .then((recipes) => {
             User.find().then((users) => {
@@ -54,7 +55,6 @@ app.get('/recipe/:id', (req, res) => {
             .catch((err) => { console.log(err) });
         })
         .catch((err) => { res.status(404).render('404', { title: 'Error - 404', filename: '404', style: 'no', js: 'no' }) });
-
 });
 
 // informatin of how the site works
@@ -98,7 +98,15 @@ app.get('/create', (req, res) => {
 
 // list own recipes (only for logged in users)
 app.get('/my-recipes', (req, res) => {
-    res.render('my-recipes', { title: 'My Recipes', filename: 'my-recipes', style: 'no', js: 'no' });
+
+    //Change this to variable users...
+    Recipe.find({ created_by: "6537b7418956294e4a7b3cc2"})
+        .then((recipes) => {
+            res.render('my-recipes', { title: 'My Recipes', filename: 'my-recipes', style: 'no', js: 'no', recipes });
+        })
+        .catch((err) => { res.status(404).render('404', { title: 'Error - 404', filename: '404', style: 'no', js: 'no' }) });
+
+
 });
 
 // list recipes of other people that you saved/liked
