@@ -48,7 +48,31 @@ app.get('/login', (req, res) => {
 // create a new recipes (only for logged in users)
 app.get('/create', (req, res) => {
     res.render('create', { title: 'Create Recipe', filename: 'create', style: 'none', js: 'none' });
-});
+/*     const user = new User({
+        username: "samueltest",
+        password: "12345678"
+    });
+    user.save()
+        .then((result) => {
+            console.log('user saved');
+        })
+        .catch((err) => console.log(err));
+}); */
+    const recipe = new Recipe({
+        created_by: "6537b7418956294e4a7b3cc2",
+        name: "Gnocchi mit Gorgonzolasoße",
+        image_link: "./recipe-images/default.jpg",
+        author_rating: 5,
+        difficulty: "medium",
+        preparation_time: 20,
+        full_recipe: "Zuerst Eier aufschlagen ... /n test /n dann das machen ... "
+    });
+    recipe.save()
+        .then((result) => {
+            console.log('user saved');
+        })
+        .catch((err) => console.log(err));
+}); 
 
 // list own recipes (only for logged in users)
 app.get('/my-recipes', (req, res) => {
