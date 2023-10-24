@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head.ejs') %>
+
+    <body>
+        <%- include('./partials/head.ejs') %>
+
+            <main>
+
+                <h1>Sign Up</h1>
+
+                <!-- USERNAME -->
+                <div class="input-control">
+                    <label for="newuser">Username</label></td>
+                    <input type="text" id="newuser" name="newuser">
+                    <div class="errormessage"></div>
+                </div>
+                <!-- PASSWORD -->
+                <div class="input-control">
+                    <label for="newpassword"> Password </label>
+                    <input type="password" id="newpassword" name="newpassword">
+                    <div class="errormessage"></div>
+                </div>
+
+                <!-- PASSWORD -->
+                <div class="input-control">
+                    <label for="newpassword2">Confirm Password </label>
+                    <input type="password" id="newpassword2" name="newpassword2">
+                    <div class="errormessage"></div>
+                </div>
+
+                <!-- Formular absenden -->
+                <button type="submit">Sign Up</button>
+
+                </form> <!-- Formular Ende -->
+
+
+                <div id="switchcontainer">
+                    <a href="/login" id="switchLoginSignup">Login</a>
+                </div>
+
+            </main>
+
+            <%- include('./partials/footer.ejs') %>
+
+    </body>
+
+</html>
