@@ -34,27 +34,42 @@ app.use(express.static('public'));
 app.get('/', (req, res) => {
     Recipe.find().sort({ createdAt: -1 })
         .then((recipes) => {
-            User.find().then((users) =>{
-                res.render('index', { title: 'Home', filename: 'home', style: 'yes', js: 'none', recipes, users });
-            });
+            User.find().then((users) => {
+                res.render('index', { title: 'Home', filename: 'home', style: 'yes', js: 'no', recipes, users });
+            })
+            .catch((err) => { console.log(err) });
         })
         .catch((err) => { console.log(err) });
-        
+
+});
+
+app.get('/recipe/:id', (req, res) => {
+
+    const id = req.params.id;
+    Recipe.findById(id)
+        .then((recipe) => {
+            User.find().then((users) => {
+                res.render('recipe', { title: 'Recipe', filename: 'recipe', style: 'none', js: 'no', recipe, users });
+            })
+            .catch((err) => { console.log(err) });
+        })
+        .catch((err) => { res.status(404).render('404', { title: 'Error - 404', filename: '404', style: 'no', js: 'no' }) });
+
 });
 
 // informatin of how the site works
 app.get('/about', (req, res) => {
-    res.render('about', { title: 'About', filename: 'about', style: 'none', js: 'none' });
+    res.render('about', { title: 'About', filename: 'about', style: 'no', js: 'no' });
 });
 
 // login
 app.get('/login', (req, res) => {
-    res.render('login', { title: 'Login/SignUp', filename: 'login', style: 'yes', js: 'none' });
+    res.render('login', { title: 'Login/SignUp', filename: 'login', style: 'yes', js: 'no' });
 });
 
 // create a new recipes (only for logged in users)
 app.get('/create', (req, res) => {
-    res.render('create', { title: 'Create Recipe', filename: 'create', style: 'none', js: 'none' });
+    res.render('create', { title: 'Create Recipe', filename: 'create', style: 'no', js: 'no' });
     /*     const user = new User({
             username: "samueltest",
             password: "12345678"
@@ -65,25 +80,25 @@ app.get('/create', (req, res) => {
             })
             .catch((err) => console.log(err));
     }); */
-        const recipe = new Recipe({
-            created_by: "6537b7418956294e4a7b3cc2",
-            name: "Bolognese",
-            image_link: "./recipe_images/default.jpg",
-            author_rating: 4,
-            difficulty: "easy",
-            preparation_time: 10,
-            full_recipe: "Nudeln Kochen ... "
-        });
-        recipe.save()
-            .then((result) => {
-                console.log('recipe saved');
-            })
-            .catch((err) => console.log(err));
+/*     const recipe = new Recipe({
+        created_by: "6537b7418956294e4a7b3cc2",
+        name: "Bolognese",
+        image_link: "./recipe_images/default.jpg",
+        author_rating: 4,
+        difficulty: "easy",
+        preparation_time: 10,
+        full_recipe: "Nudeln Kochen ... "
+    });
+    recipe.save()
+        .then((result) => {
+            console.log('recipe saved');
+        })
+        .catch((err) => console.log(err)); */
 });
 
 // list own recipes (only for logged in users)
 app.get('/my-recipes', (req, res) => {
-    res.render('my-recipes', { title: 'My Recipes', filename: 'my-recipes', style: 'none', js: 'none' });
+    res.render('my-recipes', { title: 'My Recipes', filename: 'my-recipes', style: 'no', js: 'no' });
 });
 
 // list recipes of other people that you saved/liked
@@ -93,5 +108,5 @@ app.get('/my-recipes', (req, res) => {
 
 // errorpage
 app.use((req, res) => {
-    res.status(404).render('404', { title: 'Error - 404', filename: '404', style: 'none', js: 'none' });
+    res.status(404).render('404', { title: 'Error - 404', filename: '404', style: 'no', js: 'no' });
 });

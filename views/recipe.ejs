@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head.ejs') %>
+
+    <body>
+
+        <%- include('./partials/nav.ejs') %>
+
+                <!-- ggf mit grid sinnvoll, überschrift bei mobile über dem Bild, bei desktop alles neben dem Bild. -->
+
+                    <div class="recipe">
+                        <div class="recipe-image">
+                            <img src="<%= recipe.image_link %>"" alt="">
+                        </div>
+                        <div class="recipe-info">
+                            <h1><%= recipe.name %></h1>
+                            <% users.forEach(user => { if(user._id == recipe.created_by){ username = user.username}});%>
+                            <p>Created by <%= username %></p>
+                            <p>Author Rating: <%= recipe.author_rating %></p>
+                            <p>Public Rating: <%= recipe.public_rating %></p>
+                            <p>Preparation Time: <%= recipe.preparation_time %> min</p>
+                        </div>
+                        <div class="recipe-content">
+                            <p><%= recipe.full_recipe %></p>
+                        </div>
+                    </div>
+    
+    
+    <%- include('./partials/footer.ejs') %>
+
+</body>
+</html> 
