@@ -5,6 +5,10 @@ const express = require('express');
 // express app
 const app = express();
 
+// connect to MongoDb
+const URI = require('./mongoDbLogin.js');
+console.log(URI);
+
 // register view engine
 app.set('view engine', 'ejs');
 
