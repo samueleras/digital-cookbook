@@ -2,13 +2,17 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
+const User = require('./models/user')
+const Recipe = require('./models/recipe')
 
 // express app
 const app = express();
 
 // connect to MongoDb
-const URI = require('./mongoDbLogin.js');
-console.log(URI);
+const dbURI = require('./mongoDbLogin.js');
+mongoose.connect(dbURI)
+    .then((result) => console.log('connected to db'))
+    .catch((err) => console.log(err));
 
 // register view engine
 app.set('view engine', 'ejs');
