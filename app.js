@@ -6,6 +6,7 @@ const User = require('./models/user')
 const Recipe = require('./models/recipe')
 const jwt = require('jsonwebtoken');
 const jwtEncryptionKey = require('./jwtEncryptionKey.js');
+const jwtAuth = require('./jwtAuth.js');
 
 // express app
 const app = express();
@@ -90,7 +91,7 @@ app.post('/login-submit', async (req, res) => {
 
         delete user.password;
 
-        const token = jwt.sign(user, jwtEncryptionKey, { expiresIn: "1h"});
+        const token = jwt.sign(user, jwtEncryptionKey, { expiresIn: "1h" });
 
         res.cookie("token", token, {
             httpOnly: true
@@ -106,21 +107,45 @@ app.post('/login-submit', async (req, res) => {
 
 });
 
+// signup
+app.get('/signup', (req, res) => {
+    res.render('signup', { title: 'SignUp', filename: 'singup', style: 'yes', js: 'no' });
+});
+
+// sinup action
+app.post('/signup-submit', async (req, res) => {
+
+    const { username, password } = req.body;
+
+    //Check if Username is already in use ...
+
+    const user = new User({
+        username: username,
+        password: password
+    });
+    user.save()
+        .then((result) => {
+            console.log('user saved');
+            res.redirect("/my-recipes");
+        })
+        .catch((err) => console.log(err));
+
+});
+
+
 // create a new recipes (only for logged in users)
-app.get('/create', (req, res) => {
+app.get('/create', jwtAuth, (req, res) => {
+    console.log(req.user.userid);
     res.render('create', { title: 'Create Recipe', filename: 'create', style: 'no', js: 'no' });
-    /*     const user = new User({
-            username: "samueltest",
-            password: "12345678"
-        });
-        user.save()
-            .then((result) => {
-                console.log('user saved');
-            })
-            .catch((err) => console.log(err));
-    }); */
+
+});
+
+app.post('/create-submit', async (req, res) => {
+
+
+
     /*     const recipe = new Recipe({
-            created_by: "6537b7418956294e4a7b3cc2",
+            created_by: req.user.userid,
             name: "Bolognese",
             image_link: "./recipe_images/default.jpg",
             author_rating: 4,
@@ -133,13 +158,14 @@ app.get('/create', (req, res) => {
                 console.log('recipe saved');
             })
             .catch((err) => console.log(err)); */
+
 });
 
 // list own recipes (only for logged in users)
-app.get('/my-recipes', (req, res) => {
+app.get('/my-recipes', jwtAuth, (req, res) => {
 
     //Change this to variable users...
-    Recipe.find({ created_by: "6537b7418956294e4a7b3cc2" })
+    Recipe.find({ created_by: req.user.userid })
         .then((recipes) => {
             res.render('my-recipes', { title: 'My Recipes', filename: 'my-recipes', style: 'no', js: 'no', recipes });
         })
