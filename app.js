@@ -26,13 +26,6 @@ app.listen(3000);
 // static files
 app.use(express.static('public'));
 
-// Is there middleware for Sessions? Get user id ??
-
-// auth-middleware to check if user is logged in
-/* app.use( () => {
-    auth
-}); */
-
 // home page for everyone to see, with everyones recipes
 app.get('/', (req, res) => {
 
@@ -69,7 +62,7 @@ app.get('/about', (req, res) => {
 
 // login
 app.get('/login', (req, res) => {
-    res.render('login', { title: 'Login/SignUp', filename: 'login', style: 'yes', js: 'no' });
+    res.render('login', { title: 'Login/SignUp', filename: 'login', style: 'yes', js: 'yes' });
 });
 
 // login action
@@ -109,26 +102,51 @@ app.post('/login-submit', async (req, res) => {
 
 // signup
 app.get('/signup', (req, res) => {
-    res.render('signup', { title: 'SignUp', filename: 'singup', style: 'yes', js: 'no' });
+    res.render('signup', { title: 'SignUp', filename: 'signup', style: 'yes', js: 'yes' });
 });
 
 // sinup action
 app.post('/signup-submit', async (req, res) => {
 
     const { username, password } = req.body;
+    const response = { user: "taken", password: "tooshort", success: "true" };
+    console.log("frei");
 
-    //Check if Username is already in use ...
+    try {
 
-    const user = new User({
-        username: username,
-        password: password
-    });
-    user.save()
-        .then((result) => {
-            console.log('user saved');
-            res.redirect("/my-recipes");
-        })
-        .catch((err) => console.log(err));
+        const users = await User.find({ username: username });
+
+        if (username != "" && typeof users[0] == 'undefined') {
+            response.user = "available"
+            console.log("frei");
+        }
+
+        //password check hier
+        response.password = "ok";
+
+        if (response.user == "available" && response.password == "ok") {
+
+            response.success = "true";
+
+            const user = new User({
+                username: username,
+                password: password
+            });
+            user.save()
+                .then((result) => {
+                    console.log('user saved');
+                })
+                .catch((err) => console.log(err));
+        }
+
+        res.send(response, 200);
+        res.end();
+    }
+    catch (err) {
+        console.log(err);
+        res.send(response);
+        res.end();
+    }
 
 });
 
@@ -137,7 +155,6 @@ app.post('/signup-submit', async (req, res) => {
 app.get('/create', jwtAuth, (req, res) => {
     console.log(req.user.userid);
     res.render('create', { title: 'Create Recipe', filename: 'create', style: 'no', js: 'no' });
-
 });
 
 app.post('/create-submit', async (req, res) => {
@@ -159,12 +176,12 @@ app.post('/create-submit', async (req, res) => {
             })
             .catch((err) => console.log(err)); */
 
+
 });
 
 // list own recipes (only for logged in users)
 app.get('/my-recipes', jwtAuth, (req, res) => {
 
-    //Change this to variable users...
     Recipe.find({ created_by: req.user.userid })
         .then((recipes) => {
             res.render('my-recipes', { title: 'My Recipes', filename: 'my-recipes', style: 'no', js: 'no', recipes });
