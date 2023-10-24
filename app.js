@@ -4,6 +4,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const User = require('./models/user')
 const Recipe = require('./models/recipe')
+const jwt = require('jsonwebtoken');
+const jwtEncryptionKey = require('./jwtEncryptionKey.js');
 
 // express app
 const app = express();
@@ -32,13 +34,14 @@ app.use(express.static('public'));
 
 // home page for everyone to see, with everyones recipes
 app.get('/', (req, res) => {
-/*     console.log(req.session); */
+
     Recipe.find().sort({ createdAt: -1 })
         .then((recipes) => {
-            User.find().then((users) => {
-                res.render('index', { title: 'Home', filename: 'home', style: 'yes', js: 'no', recipes, users });
-            })
-            .catch((err) => { console.log(err) });
+            User.find()
+                .then((users) => {
+                    res.render('index', { title: 'Home', filename: 'home', style: 'yes', js: 'no', recipes, users });
+                })
+                .catch((err) => { console.log(err) });
         })
         .catch((err) => { console.log(err) });
 
@@ -49,10 +52,11 @@ app.get('/recipe/:id', (req, res) => {
     const id = req.params.id;
     Recipe.findById(id)
         .then((recipe) => {
-            User.find().then((users) => {
-                res.render('recipe', { title: 'Recipe', filename: 'recipe', style: 'none', js: 'no', recipe, users });
-            })
-            .catch((err) => { console.log(err) });
+            User.find()
+                .then((users) => {
+                    res.render('recipe', { title: 'Recipe', filename: 'recipe', style: 'none', js: 'no', recipe, users });
+                })
+                .catch((err) => { console.log(err) });
         })
         .catch((err) => { res.status(404).render('404', { title: 'Error - 404', filename: '404', style: 'no', js: 'no' }) });
 });
@@ -65,6 +69,41 @@ app.get('/about', (req, res) => {
 // login
 app.get('/login', (req, res) => {
     res.render('login', { title: 'Login/SignUp', filename: 'login', style: 'yes', js: 'no' });
+});
+
+// login action
+app.post('/login-submit', async (req, res) => {
+
+    const { username, password } = req.body;
+
+    let user = "";
+
+    try {
+        const users = await User.find({ username: username });
+
+        /*         if(typeof users[0] != 'undefined'){ */
+        user = { userid: users[0]._id, username: users[0].username, password: users[0].password };
+        /*         } */
+        if (user.password !== password) {
+            res.redirect('/login');
+        }
+
+        delete user.password;
+
+        const token = jwt.sign(user, jwtEncryptionKey, { expiresIn: "1h"});
+
+        res.cookie("token", token, {
+            httpOnly: true
+        });
+
+        res.redirect("/my-recipes");
+
+    }
+    catch (err) {
+        console.log(err);
+        res.redirect('/login');
+    }
+
 });
 
 // create a new recipes (only for logged in users)
@@ -80,27 +119,27 @@ app.get('/create', (req, res) => {
             })
             .catch((err) => console.log(err));
     }); */
-/*     const recipe = new Recipe({
-        created_by: "6537b7418956294e4a7b3cc2",
-        name: "Bolognese",
-        image_link: "./recipe_images/default.jpg",
-        author_rating: 4,
-        difficulty: "easy",
-        preparation_time: 10,
-        full_recipe: "Nudeln Kochen ... "
-    });
-    recipe.save()
-        .then((result) => {
-            console.log('recipe saved');
-        })
-        .catch((err) => console.log(err)); */
+    /*     const recipe = new Recipe({
+            created_by: "6537b7418956294e4a7b3cc2",
+            name: "Bolognese",
+            image_link: "./recipe_images/default.jpg",
+            author_rating: 4,
+            difficulty: "easy",
+            preparation_time: 10,
+            full_recipe: "Nudeln Kochen ... "
+        });
+        recipe.save()
+            .then((result) => {
+                console.log('recipe saved');
+            })
+            .catch((err) => console.log(err)); */
 });
 
 // list own recipes (only for logged in users)
 app.get('/my-recipes', (req, res) => {
 
     //Change this to variable users...
-    Recipe.find({ created_by: "6537b7418956294e4a7b3cc2"})
+    Recipe.find({ created_by: "6537b7418956294e4a7b3cc2" })
         .then((recipes) => {
             res.render('my-recipes', { title: 'My Recipes', filename: 'my-recipes', style: 'no', js: 'no', recipes });
         })
