@@ -4,9 +4,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const User = require('./models/user')
 const Recipe = require('./models/recipe')
+const cookieParser = require("cookie-parser");
 const jwt = require('jsonwebtoken');
 const jwtEncryptionKey = require('./jwtEncryptionKey.js');
 const jwtAuth = require('./jwtAuth.js');
+const bodyParser = require('body-parser')
 
 // express app
 const app = express();
@@ -20,11 +22,17 @@ mongoose.connect(dbURI)
 // register view engine
 app.set('view engine', 'ejs');
 
+// create application/json parser
+const jsonParser = bodyParser.json();
+
 // listen for requests on localhost:3000
 app.listen(3000);
 
 // static files
 app.use(express.static('public'));
+
+// Use cookieParser
+app.use(cookieParser());
 
 // home page for everyone to see, with everyones recipes
 app.get('/', (req, res) => {
@@ -66,31 +74,33 @@ app.get('/login', (req, res) => {
 });
 
 // login action
-app.post('/login-submit', async (req, res) => {
+app.post('/login-submit', jsonParser, async (req, res) => {
 
     const { username, password } = req.body;
+
+    console.log(req.body)
 
     let user = "";
 
     try {
         const users = await User.find({ username: username });
 
-        /*         if(typeof users[0] != 'undefined'){ */
         user = { userid: users[0]._id, username: users[0].username, password: users[0].password };
-        /*         } */
+
         if (user.password !== password) {
-            res.redirect('/login');
+            res.end();
+        } else {
+            console.log("Login successful")
+
+            delete user.password;
+
+            const token = jwt.sign(user, jwtEncryptionKey, { expiresIn: "1h" });
+
+            res.cookie("token", token, {
+                httpOnly: true
+            });
+            res.redirect("/");      //Why does this redirect not work
         }
-
-        delete user.password;
-
-        const token = jwt.sign(user, jwtEncryptionKey, { expiresIn: "1h" });
-
-        res.cookie("token", token, {
-            httpOnly: true
-        });
-
-        res.redirect("/my-recipes");
 
     }
     catch (err) {
@@ -105,28 +115,50 @@ app.get('/signup', (req, res) => {
     res.render('signup', { title: 'SignUp', filename: 'signup', style: 'yes', js: 'yes' });
 });
 
-// sinup action
-app.post('/signup-submit', async (req, res) => {
-
-    const { username, password } = req.body;
-    const response = { user: "taken", password: "tooshort", success: "true" };
-    console.log("frei");
+// signup action
+app.post('/signup-submit', jsonParser, async (req, res) => {
+    console.log(req.body);
+    const { username, password, password2 } = req.body;
+    let response = { user_available: false, password: "missing", password2: "missing", success: false };
 
     try {
 
         const users = await User.find({ username: username });
 
+        console.log(username)
+
+        // name check
         if (username != "" && typeof users[0] == 'undefined') {
-            response.user = "available"
-            console.log("frei");
+            response.user_available = true;
         }
 
-        //password check hier
-        response.password = "ok";
+        console.log(response.user_available)
 
-        if (response.user == "available" && response.password == "ok") {
+        // password check
+        if (password === "") {
+            response.password = "missing";
+        } else if (password.length < 8) {
+            response.password = "tooshort";
+        }
+        else {
+            response.password = "ok";
+        }
 
-            response.success = "true";
+        if (password2 === "") {
+            response.password2 = "missing";
+        } else if (password !== password2) {
+            response.password2 = "notmatching";
+        }
+        else {
+            response.password2 = "ok";
+        }
+
+        console.log(response.password)
+        console.log(response.password2)
+
+        if (response.user_available && response.password == "ok" && response.password2 == "ok") {
+
+            response.success = true;
 
             const user = new User({
                 username: username,
@@ -139,13 +171,13 @@ app.post('/signup-submit', async (req, res) => {
                 .catch((err) => console.log(err));
         }
 
-        res.send(response, 200);
-        res.end();
+        console.log(response.success)
+
+        res.send(response);
     }
     catch (err) {
         console.log(err);
         res.send(response);
-        res.end();
     }
 
 });

@@ -1,4 +1,4 @@
-"use strict";
+/* "use strict"; */
 
 //Get Formular
 const formsignup = document.querySelector('#formsignup');
@@ -17,52 +17,51 @@ let newpasswordValue2 = "";
 formsignup.addEventListener("submit", async (e) => {
 
     e.preventDefault();
-    console.log("frei");
 
-/*     let response = await fetch('/signup-submit', {
+    newusernameValue = newuser.value.trim();
+    newpasswordValue = newpassword.value.trim();
+    newpasswordValue2 = newpassword2.value.trim();
+
+    let response = await fetch('/signup-submit', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ "username": newusernameValue, "password": newpasswordValue })
+        body: JSON.stringify({ "username": newusernameValue, "password": newpasswordValue, "password2": newpasswordValue2 })
     })
 
-    console.log("test");
-    console.log(response);
+    response = await response.json();
 
-    if (response.success == "false") {
-        validateInputsSignUp(response.user, response.password)
-    } else {
+    if (response.success) {
         signup_successful.setAttribute("data-visible", true);
-    } */
+        setTimeout(() => location.href = '/login', 2000);
+    }
 
+    validateInputsSignUp(response.user_available, response.password, response.password2)
 });
 
 //Prüfe INPUTS Signup
-const validateInputsSignUp = (user) => {
+const validateInputsSignUp = (user_available, password, password2) => {
 
-    newusernameValue = newuser.value.trim();
-    newpasswordValue = newpassword.value.trim();
-    newpasswordValue2 = newpassword2.value.trim();
     let state = { wrongInputs: false };
 
     if (newusernameValue === "") {
         formError('Username is missing', newuser);
         state = { wrongInputs: true };
     } else {
-        if (user === "taken") {
+        if (user_available) {
+            formSucess(newuser);
+        } else {
             formError('Username is already taken', newuser);
             state = { wrongInputs: true };
-        } else {
-            formSucess(newuser);
         }
     }
 
-    if (newpasswordValue === "") {
+    if (password == "missing") {
         formError('Password is missing', newpassword);
         state = { wrongInputs: true };
-    } else if (newpasswordValue.length < 8) {
+    } else if (password == "tooshort") {
         formError('Password is too short', newpassword);
         state = { wrongInputs: true };
     }
@@ -70,10 +69,10 @@ const validateInputsSignUp = (user) => {
         formSucess(newpassword);
     }
 
-    if (newpasswordValue2 === "") {
+    if (password2 == "missing") {
         formError('Password is missing', newpassword2);
         state = { wrongInputs: true };
-    } else if (newpasswordValue !== newpasswordValue2) {
+    } else if (password2 == "notmatching") {
         formError('Passwords don´t match', newpassword2);
         state = { wrongInputs: true };
     }
@@ -82,26 +81,6 @@ const validateInputsSignUp = (user) => {
     }
 
 }
-
-//Prüfe Name bei Signup
-/* async function checkNameSignup() {
-
-    let response = await fetch('/signup-checkname', {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ "username": newusernameValue })
-    })
-
-    response = await response.json();
-
-    if (response.user == "false") {
-        return false;
-    }
-    return true;
-} */
 
 //Error/Success Functions
 function formError(message, element) {

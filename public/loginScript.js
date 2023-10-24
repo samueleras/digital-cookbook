@@ -15,7 +15,7 @@ formlogin.addEventListener("submit", async (e) => {
     let passwordValue = password.value.trim();
     e.preventDefault();
 
-    checkLogin(usernameValue, passwordValue);
+    await checkLogin(usernameValue, passwordValue);
 
     validateInputsLogin(usernameValue, passwordValue);
     
