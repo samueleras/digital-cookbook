@@ -36,7 +36,7 @@ async function checkLogin(usernameValue, passwordValue) {
 
     if (response.success) {
         login_successful.setAttribute("data-visible", true);
-        setTimeout(() => location.href = '/my-recipes', 2000);
+        setTimeout(() => location.href = '/my-recipes', 1000);
     }
 
     validateInputsLogin(usernameValue, passwordValue, response.success);
