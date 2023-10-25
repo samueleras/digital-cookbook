@@ -6,15 +6,19 @@ const User = require('./models/user')
 const Recipe = require('./models/recipe')
 const cookieParser = require("cookie-parser");
 const jwt = require('jsonwebtoken');
-const jwtEncryptionKey = require('./jwtEncryptionKey.js');
-const jwtAuth = require('./jwtAuth.js');
-const bodyParser = require('body-parser')
+const jwtEncryptionKey = require('./modules/jwtEncryptionKey.js');
+const jwtAuth = require('./modules/jwtAuth.js');
+const bodyParser = require('body-parser');
+const { createHash } = require('crypto');
+
+
+
 
 // express app
 const app = express();
 
 // connect to MongoDb
-const dbURI = require('./mongoDbLogin.js');
+const dbURI = require('./modules/mongoDbLogin.js');
 mongoose.connect(dbURI)
     .then((result) => console.log('connected to db'))
     .catch((err) => console.log(err));
@@ -78,16 +82,14 @@ app.post('/login-submit', jsonParser, async (req, res) => {
 
     const { username, password } = req.body;
 
-    console.log(req.body)
-
-    let user = "";
+    let hashed_password = createHash('sha256').update(password).digest('hex');
 
     try {
         const users = await User.find({ username: username });
 
-        user = { userid: users[0]._id, username: users[0].username, password: users[0].password };
+        let user = { userid: users[0]._id, username: users[0].username, password: users[0].password };
 
-        if (user.password !== password) {
+        if (user.password !== hashed_password) {
             throw new Error("On login: Password is wrong!")
         } else {
             console.log("Login successful")
@@ -112,7 +114,7 @@ app.get('/signup', (req, res) => {
 
 // signup action
 app.post('/signup-submit', jsonParser, async (req, res) => {
-    console.log(req.body);
+
     const { username, password, password2 } = req.body;
     let response = { user_available: false, password: "missing", password2: "missing", success: false };
 
@@ -147,10 +149,11 @@ app.post('/signup-submit', jsonParser, async (req, res) => {
         if (response.user_available && response.password == "ok" && response.password2 == "ok") {
 
             response.success = true;
+            let hashed_password = createHash('sha256').update(password).digest('hex');
 
             const user = new User({
                 username: username,
-                password: password
+                password: hashed_password
             });
             user.save()
                 .then((result) => {
