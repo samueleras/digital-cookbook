@@ -88,26 +88,21 @@ app.post('/login-submit', jsonParser, async (req, res) => {
         user = { userid: users[0]._id, username: users[0].username, password: users[0].password };
 
         if (user.password !== password) {
-            res.end();
+            throw new Error("On login: Password is wrong!")
         } else {
             console.log("Login successful")
-
             delete user.password;
-
             const token = jwt.sign(user, jwtEncryptionKey, { expiresIn: "1h" });
-
             res.cookie("token", token, {
                 httpOnly: true
             });
-            res.redirect("/");      //Why does this redirect not work
+            res.send({ success: true });
         }
-
     }
     catch (err) {
         console.log(err);
-        res.redirect('/login');
+        res.send({ success: false });
     }
-
 });
 
 // signup
@@ -122,17 +117,13 @@ app.post('/signup-submit', jsonParser, async (req, res) => {
     let response = { user_available: false, password: "missing", password2: "missing", success: false };
 
     try {
-
+        // Search for user in DB
         const users = await User.find({ username: username });
 
-        console.log(username)
-
-        // name check
+        // check if username is available
         if (username != "" && typeof users[0] == 'undefined') {
             response.user_available = true;
         }
-
-        console.log(response.user_available)
 
         // password check
         if (password === "") {
@@ -153,9 +144,6 @@ app.post('/signup-submit', jsonParser, async (req, res) => {
             response.password2 = "ok";
         }
 
-        console.log(response.password)
-        console.log(response.password2)
-
         if (response.user_available && response.password == "ok" && response.password2 == "ok") {
 
             response.success = true;
@@ -166,13 +154,10 @@ app.post('/signup-submit', jsonParser, async (req, res) => {
             });
             user.save()
                 .then((result) => {
-                    console.log('user saved');
+                    console.log('New user saved to DB');
                 })
                 .catch((err) => console.log(err));
         }
-
-        console.log(response.success)
-
         res.send(response);
     }
     catch (err) {

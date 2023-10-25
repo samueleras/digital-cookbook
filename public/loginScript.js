@@ -8,6 +8,7 @@ const formlogin = document.querySelector('#formlogin');
 //-----------------------//
 const user = document.querySelector('#user');
 const password = document.querySelector('#password');
+const login_successful = document.querySelector('#successful');
 
 formlogin.addEventListener("submit", async (e) => {
 
@@ -17,8 +18,6 @@ formlogin.addEventListener("submit", async (e) => {
 
     await checkLogin(usernameValue, passwordValue);
 
-    validateInputsLogin(usernameValue, passwordValue);
-    
 });
 
 // login & redirect intialized by server if credentials are correct
@@ -32,10 +31,21 @@ async function checkLogin(usernameValue, passwordValue) {
         },
         body: JSON.stringify({ "username": usernameValue, "password": passwordValue })
     })
+
+    response = await response.json();
+
+    if (response.success) {
+        login_successful.setAttribute("data-visible", true);
+        setTimeout(() => location.href = '/my-recipes', 2000);
+    }
+
+    validateInputsLogin(usernameValue, passwordValue, response.success);
 }
 
 // Check and indicate wrong inputs
-const validateInputsLogin = (usernameValue, passwordValue) => {
+const validateInputsLogin = (usernameValue, passwordValue, success) => {
+    console.log("test");
+    console.log(success);
     //Login
     if (usernameValue === "") {
         formError('Username is missing', user);
@@ -45,6 +55,8 @@ const validateInputsLogin = (usernameValue, passwordValue) => {
 
     if (passwordValue === "") {
         formError('Password is missing', password);
+    } else if (success) {
+        formSucess(password);
     } else {
         formError('Password or Username is wrong', password);
     }
