@@ -1,19 +1,27 @@
 "use strict";
 
 //Get Formular
-const formlogin = document.querySelector('#formlogin');
+const form = document.querySelector('#form-new-recipe');
 
 //-----------------------//
-//---------LOGIN---------//
+//-----Create Recipe-----//
 //-----------------------//
-const user = document.querySelector('#user');
-const password = document.querySelector('#password');
-const login_successful = document.querySelector('#successful');
+const name = document.querySelector('#recipe-name');
+const image_link = document.querySelector('#image');
+const onestar = document.querySelector('#1star');
+const twostar = document.querySelector('#2star');
+const threestar = document.querySelector('#3star');
+const fourstar = document.querySelector('#4star');
+const fivestar = document.querySelector('#5star');
+const difficulty = document.querySelector('#difficulty');
+const preparation_time = document.querySelector('#preparation-time');
+const full_recipe = document.querySelector('#recipe');
 
-formlogin.addEventListener("submit", async (e) => {
 
-    let usernameValue = user.value.trim();
-    let passwordValue = password.value.trim();
+form.addEventListener("submit", async (e) => {
+
+/*     let usernameValue = user.value.trim();
+    let passwordValue = password.value.trim(); */
     e.preventDefault();
 
     await checkLogin(usernameValue, passwordValue);
@@ -44,6 +52,8 @@ async function checkLogin(usernameValue, passwordValue) {
 
 // Check and indicate wrong inputs
 const validateInputsLogin = (usernameValue, passwordValue, success) => {
+    console.log("test");
+    console.log(success);
     //Login
     if (usernameValue === "") {
         formError('Username is missing', user);

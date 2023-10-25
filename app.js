@@ -27,7 +27,9 @@ mongoose.connect(dbURI)
 app.set('view engine', 'ejs');
 
 // create application/json parser
-const jsonParser = bodyParser.json();
+/* const jsonParser = bodyParser.json(); */
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 // listen for requests on localhost:3000
 app.listen(3000);
@@ -78,7 +80,7 @@ app.get('/login', (req, res) => {
 });
 
 // login action
-app.post('/login-submit', jsonParser, async (req, res) => {
+app.post('/login-submit', /* jsonParser, */ async (req, res) => {
 
     const { username, password } = req.body;
 
@@ -113,7 +115,7 @@ app.get('/signup', (req, res) => {
 });
 
 // signup action
-app.post('/signup-submit', jsonParser, async (req, res) => {
+app.post('/signup-submit', /* jsonParser, */ async (req, res) => {
 
     const { username, password, password2 } = req.body;
     let response = { user_available: false, password: "missing", password2: "missing", success: false };
@@ -173,28 +175,31 @@ app.post('/signup-submit', jsonParser, async (req, res) => {
 
 // create a new recipes (only for logged in users)
 app.get('/create', jwtAuth, (req, res) => {
-    console.log(req.user.userid);
     res.render('create', { title: 'Create Recipe', filename: 'create', style: 'no', js: 'no' });
 });
 
-app.post('/create-submit', async (req, res) => {
+app.post('/create-submit', jwtAuth, async (req, res) => {
+
+    console.log(req.body);
 
 
+    const { name, image_link, author_rating, difficulty, preparation_time, full_recipe } = req.body;
 
-    /*     const recipe = new Recipe({
+        const recipe = new Recipe({
             created_by: req.user.userid,
-            name: "Bolognese",
-            image_link: "./recipe_images/default.jpg",
-            author_rating: 4,
-            difficulty: "easy",
-            preparation_time: 10,
-            full_recipe: "Nudeln Kochen ... "
+            name: name,
+            image_link: "/recipe_images/default.jpg",
+            author_rating: author_rating,
+            difficulty: difficulty,
+            preparation_time: preparation_time,
+            full_recipe: full_recipe
         });
         recipe.save()
             .then((result) => {
                 console.log('recipe saved');
+                res.redirect(`recipe/${result._id}`);
             })
-            .catch((err) => console.log(err)); */
+            .catch((err) => console.log(err));
 
 
 });
