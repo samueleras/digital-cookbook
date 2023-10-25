@@ -19,7 +19,7 @@
                             <p>Author Rating: <%= recipe.author_rating %></p>
                             <p>Public Rating: <%= recipe.public_rating %></p>
                             <p>Preparation Time: <%= recipe.preparation_time %> min</p>
-                            <% users.forEach(user => { if(user._id == recipe.created_by){ username = user.username}});%>
+                            <% let username = '"deleted user"'; users.forEach(user => { if(user._id == recipe.created_by){ username = user.username}});%>
                             <p>Created by <%= username %></p>
                         </div>
                     </a>
