@@ -94,6 +94,16 @@ body {
     text-decoration: none;
 }
 
+#successful[data-visible="true"]{
+/*     position: absolute;
+    top: 2em; */
+    color: #09c372;
+    display: inline-block;
+}
+
+#successful[data-visible="false"]{
+    display: none;
+}
 
 
 
