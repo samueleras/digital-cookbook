@@ -1,3 +1,4 @@
 node_modules
 mongoDbLogin.js
 jwtEncryptionKey.js
+/public/recipe_images/uploaded*
