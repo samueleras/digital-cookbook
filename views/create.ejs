@@ -9,7 +9,7 @@
             <main>
 
                 <!-- Anfang Formular -->
-                <form id="form-new-recipe" class="form" action="/create-submit" method="POST">
+                <form id="form-new-recipe" class="form" action="/create-submit" method="POST" enctype="multipart/form-data">
 
                     <h1>Create a new recipe</h1>
 
@@ -21,7 +21,7 @@
                     </div>
                     <div class="input-control">
                         <label for="image">Recipe Picture (optional):</label>
-                        <input type="file" id="image_link" name="image_link">
+                        <input type="file" id="image" name="image">
                         <div class="errormessage"></div>
                     </div>
                     <!-- Own Recipe Rating -->

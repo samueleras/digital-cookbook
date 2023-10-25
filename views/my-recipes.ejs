@@ -12,7 +12,7 @@
                 <% recipes.forEach(recipe => { %>
                     <a class="recipe" href="/recipe/<%= recipe._id %>">
                         <div class="recipe-image">
-                            <img src="<%= recipe.image_link %>"" alt="">
+                            <img style="width: 100%; aspect-ratio: 1;" src="<%= recipe.image_link %>"" alt="">
                         </div>
                         <div class="recipe-info">
                             <h2><%= recipe.name %></h2>
