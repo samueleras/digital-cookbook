@@ -10,6 +10,8 @@ const jwtEncryptionKey = require('./modules/jwtEncryptionKey.js');
 const jwtAuth = require('./modules/jwtAuth.js');
 const bodyParser = require('body-parser');
 const { createHash } = require('crypto');
+const fileUpload = require('express-fileupload');
+const { v4: uuid } = require('uuid');
 
 
 
@@ -26,19 +28,21 @@ mongoose.connect(dbURI)
 // register view engine
 app.set('view engine', 'ejs');
 
-// create application/json parser
-/* const jsonParser = bodyParser.json(); */
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
-
 // listen for requests on localhost:3000
 app.listen(3000);
+
+// Use body parser for json or url
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // static files
 app.use(express.static('public'));
 
 // Use cookieParser
 app.use(cookieParser());
+
+// Use the express-fileupload middleware
+app.use(fileUpload());
 
 // home page for everyone to see, with everyones recipes
 app.get('/', (req, res) => {
@@ -80,7 +84,7 @@ app.get('/login', (req, res) => {
 });
 
 // login action
-app.post('/login-submit', /* jsonParser, */ async (req, res) => {
+app.post('/login-submit', async (req, res) => {
 
     const { username, password } = req.body;
 
@@ -115,7 +119,7 @@ app.get('/signup', (req, res) => {
 });
 
 // signup action
-app.post('/signup-submit', /* jsonParser, */ async (req, res) => {
+app.post('/signup-submit', async (req, res) => {
 
     const { username, password, password2 } = req.body;
     let response = { user_available: false, password: "missing", password2: "missing", success: false };
@@ -180,28 +184,38 @@ app.get('/create', jwtAuth, (req, res) => {
 
 app.post('/create-submit', jwtAuth, async (req, res) => {
 
-    console.log(req.body);
+    const { name, author_rating, difficulty, preparation_time, full_recipe } = req.body;
 
+    let image_link = "/recipe_images/default.jpg";;
+    let image_name = uuid();
 
-    const { name, image_link, author_rating, difficulty, preparation_time, full_recipe } = req.body;
+    try{
+        const { image } = req.files;
+        if (image && /^image/.test(image.mimetype)) {
+            let fileExtension = "." + image.name.split('.').pop();
+            image_link = '/recipe_images/uploaded' + image_name + fileExtension;
+            let absolute_image_link = __dirname + "/public" + image_link;
+            image.mv(absolute_image_link);
+        }
+    } catch (err) {
+        console.log("No picture uploaded... using default");
+    }
 
-        const recipe = new Recipe({
-            created_by: req.user.userid,
-            name: name,
-            image_link: "/recipe_images/default.jpg",
-            author_rating: author_rating,
-            difficulty: difficulty,
-            preparation_time: preparation_time,
-            full_recipe: full_recipe
-        });
-        recipe.save()
-            .then((result) => {
-                console.log('recipe saved');
-                res.redirect(`recipe/${result._id}`);
-            })
-            .catch((err) => console.log(err));
-
-
+    const recipe = new Recipe({
+        created_by: req.user.userid,
+        name: name,
+        image_link: image_link,
+        author_rating: author_rating,
+        difficulty: difficulty,
+        preparation_time: preparation_time,
+        full_recipe: full_recipe
+    });
+    recipe.save()
+        .then((result) => {
+            console.log('recipe saved');
+            res.redirect(`recipe/${result._id}`);
+        })
+        .catch((err) => console.log(err));
 });
 
 // list own recipes (only for logged in users)
