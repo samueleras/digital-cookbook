@@ -6,19 +6,21 @@
 
         <%- include('./partials/nav.ejs') %>
 
-            <h1>My Recipes</h1>
+            <h1><%= title %></h1>
 
             <% if(recipes.length > 0) { %>
                 <% recipes.forEach(recipe => { %>
                     <a class="recipe" href="/recipe/<%= recipe._id %>">
                         <div class="recipe-image">
-                            <img style="width: 100%; aspect-ratio: 1;" src="<%= recipe.image_link %>"" alt="">
+                            <img style="width: 100%; aspect-ratio: 1;" src="<%= recipe.image_link %>" alt="">
                         </div>
                         <div class="recipe-info">
                             <h2><%= recipe.name %></h2>
                             <p>Author Rating: <%= recipe.author_rating %></p>
                             <p>Public Rating: <%= recipe.public_rating %></p>
                             <p>Preparation Time: <%= recipe.preparation_time %> min</p>
+                            <% let username = '"deleted user"'; users.forEach(user => { if(user._id == recipe.created_by){ username = user.username}});%>
+                            <p>Created by <%= username %></p>
                         </div>
                     </a>
                 <% }); %>

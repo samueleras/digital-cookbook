@@ -52,7 +52,7 @@ app.get('/', (req, res) => {
         .then((recipes) => {
             User.find()
                 .then((users) => {
-                    res.render('index', { title: 'Home', ejsfile: 'home', defaultstyle: 'yes', stylefile: 'home', jsfile: 'no', recipes, users });
+                    res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'home', jsfile: 'no', recipes, users });
                 })
                 .catch((err) => { console.log(err) });
         })
@@ -66,21 +66,21 @@ app.get('/recipe/:id', (req, res) => {
         .then((recipe) => {
             User.find()
                 .then((users) => {
-                    res.render('recipe', { title: 'Recipe', ejsfile: 'recipe', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipe, users });
+                    res.render('recipe', { title: 'Recipe', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipe, users });
                 })
                 .catch((err) => { console.log(err) });
         })
-        .catch((err) => { res.status(404).render('404', { title: 'Error - 404', ejsfile: '404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
+        .catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
 });
 
 // informatin of how the site works
 app.get('/about', (req, res) => {
-    res.render('about', { title: 'About', ejsfile: 'about', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no'});
+    res.render('about', { title: 'About', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' });
 });
 
 // login
 app.get('/login', (req, res) => {
-    res.render('login', { title: 'Login/SignUp', ejsfile: 'login', defaultstyle: 'no', stylefile: 'login' , jsfile: 'yes' });
+    res.render('login', { title: 'Login/SignUp', defaultstyle: 'no', stylefile: 'login', jsfile: 'yes' });
 });
 
 // login action
@@ -116,7 +116,7 @@ app.post('/login-submit', async (req, res) => {
 
 // signup
 app.get('/signup', (req, res) => {
-    res.render('signup', { title: 'SignUp', ejsfile: 'signup', defaultstyle: 'no', stylefile: 'signup' , jsfile: 'yes' });
+    res.render('signup', { title: 'SignUp', defaultstyle: 'no', stylefile: 'signup', jsfile: 'yes' });
 });
 
 // signup action
@@ -179,7 +179,7 @@ app.post('/signup-submit', async (req, res) => {
 
 // create a new recipes (only for logged in users)
 app.get('/create', checkLogin, (req, res) => {
-    res.render('create', { title: 'Create Recipe', ejsfile: 'create', defaultstyle: 'no', stylefile: 'no', jsfile: 'no' });
+    res.render('create', { title: 'Create Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no' });
 });
 
 // submit created recipe
@@ -224,21 +224,21 @@ app.get('/my-recipes', checkLogin, (req, res) => {
 
     Recipe.find({ created_by: req.user.userid })
         .then((recipes) => {
-            res.render('my-recipes', { title: 'My Recipes', ejsfile: 'my-recipes', defaultstyle: 'yes', style: 'no', jsfile: 'no', recipes });
+            res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', style: 'no', jsfile: 'no', recipes });
         })
-        .catch((err) => { res.status(404).render('404', { title: 'Error - 404', ejsfile: '404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
+        .catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
 });
 
 // list recipes of other people that you saved/liked
 app.get('/saved', checkLogin, (req, res) => {
     Recipe.find({ '_id': { $in: req.user.saved_recipes } })
         .then((recipes) => {
-            res.render('saved', { title: 'Saved Recipes', ejsfile: 'saved-recipes', defaultstyle: 'yes', style: 'no', jsfile: 'none', recipes });
+            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', style: 'no', jsfile: 'none', recipes });
         })
-        .catch((err) => { res.status(404).render('404', { title: 'Error - 404', ejsfile: '404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
+        .catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
 });
 
 // errorpage
 app.use((req, res) => {
-    res.status(404).render('404', { title: 'Error - 404', ejsfile: '404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' });
+    res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' });
 });
