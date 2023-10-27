@@ -50,7 +50,7 @@ app.get('/', (req, res) => {
 
     Recipe.find().sort({ createdAt: -1 }).then((recipes) => {
         User.find().then((users) => {
-            res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'home', jsfile: 'no', recipes, users, currentUser: (typeof req.user === 'undefined') ? undefined : req.user });
+            res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'home', jsfile: 'no', recipes, users, currentUser: req.user ??= undefined });
         }).catch((err) => { console.log(err) });
     }).catch((err) => { console.log(err) });
 });
@@ -62,12 +62,12 @@ app.get('/recipe/:id', (req, res) => {
         User.find().then((users) => {
             res.render('recipe', { title: 'Recipe', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipe, users });
         }).catch((err) => { console.log(err) });
-    }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: (typeof req.user === 'undefined') ? undefined : req.user}) });
+    }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });
 
 // informatin of how the site works
 app.get('/about', (req, res) => {
-    res.render('about', { title: 'About', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: (typeof req.user === 'undefined') ? undefined : req.user });
+    res.render('about', { title: 'About', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined });
 });
 
 // login
@@ -109,7 +109,7 @@ app.get('/logout', checkLogin, async (req, res) => {
 
 // signup
 app.get('/signup', (req, res) => {
-    res.render('signup', { title: 'SignUp', defaultstyle: 'no', stylefile: 'signup', jsfile: 'signup', currentUser: (typeof req.user === 'undefined') ? undefined : req.user });
+    res.render('signup', { title: 'SignUp', defaultstyle: 'no', stylefile: 'signup', jsfile: 'signup', currentUser: req.user ??= undefined });
 });
 
 // signup action
@@ -169,7 +169,7 @@ app.post('/signup-submit', async (req, res) => {
 
 // create a new recipes (only for logged in users)
 app.get('/create', checkLogin, (req, res) => {
-    res.render('create', { title: 'Create Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: (typeof req.user === 'undefined') ? undefined : req.user });
+    res.render('create', { title: 'Create Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined });
 });
 
 // submit created recipe
@@ -211,20 +211,20 @@ app.post('/create-submit', checkLogin, async (req, res) => {
 app.get('/my-recipes', checkLogin, (req, res) => {
 
     Recipe.find({ created_by: req.user.userid }).then((recipes) => {
-        res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipes, currentUser: (typeof req.user === 'undefined') ? undefined : req.user });
-    }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
+        res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipes, currentUser: req.user ??= undefined });
+    }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });
 
 // list recipes of other people that you saved/liked
 app.get('/saved', checkLogin, (req, res) => {
     Recipe.find({ '_id': { $in: req.user.saved_recipes } }).then((recipes) => {
         User.find().then((users) => {
-            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipes, users, currentUser: (typeof req.user === 'undefined') ? undefined : req.user });
+            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipes, users, currentUser: req.user ??= undefined });
         }).catch((err) => { console.log(err) });
-    }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
+    }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });
 
 // errorpage
 app.use((req, res) => {
-    res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' });
+    res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined });
 });
