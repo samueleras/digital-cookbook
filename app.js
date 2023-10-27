@@ -14,9 +14,6 @@ const { createHash } = require('crypto');
 const fileUpload = require('express-fileupload');
 const { v4: uuid } = require('uuid');
 
-
-
-
 // express app
 const app = express();
 
@@ -60,11 +57,10 @@ app.get('/', (req, res) => {
                 .catch((err) => { console.log(err) });
         })
         .catch((err) => { console.log(err) });
-
 });
 
+// display recipe by id
 app.get('/recipe/:id', (req, res) => {
-
     const id = req.params.id;
     Recipe.findById(id)
         .then((recipe) => {
@@ -181,12 +177,12 @@ app.post('/signup-submit', async (req, res) => {
 
 });
 
-
 // create a new recipes (only for logged in users)
 app.get('/create', checkLogin, (req, res) => {
     res.render('create', { title: 'Create Recipe', filename: 'create', style: 'no', js: 'no' });
 });
 
+// submit created recipe
 app.post('/create-submit', checkLogin, async (req, res) => {
 
     const { name, author_rating, difficulty, preparation_time, full_recipe } = req.body;
@@ -231,12 +227,11 @@ app.get('/my-recipes', checkLogin, (req, res) => {
             res.render('my-recipes', { title: 'My Recipes', filename: 'my-recipes', style: 'no', js: 'no', recipes });
         })
         .catch((err) => { res.status(404).render('404', { title: 'Error - 404', filename: '404', style: 'no', js: 'no' }) });
-
 });
 
 // list recipes of other people that you saved/liked
 app.get('/saved', checkLogin, (req, res) => {
-    Recipe.find({ '_id': { $in: req.user.saved_recipes } }) // Wie gettet man alle recipes dessen id im array?
+    Recipe.find({ '_id': { $in: req.user.saved_recipes } })
         .then((recipes) => {
             res.render('saved', { title: 'Saved Recipes', filename: 'saved-recipes', style: 'none', js: 'none', recipes });
         })
