@@ -48,29 +48,21 @@ app.use(jwtAuth());
 // home page for everyone to see, with everyones recipes
 app.get('/', (req, res) => {
 
-    Recipe.find().sort({ createdAt: -1 })
-        .then((recipes) => {
-            User.find()
-                .then((users) => {
-                    res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'home', jsfile: 'no', recipes, users });
-                })
-                .catch((err) => { console.log(err) });
-        })
-        .catch((err) => { console.log(err) });
+    Recipe.find().sort({ createdAt: -1 }).then((recipes) => {
+        User.find().then((users) => {
+            res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'home', jsfile: 'no', recipes, users, currentUser_id: req.user.id });
+        }).catch((err) => { console.log(err) });
+    }).catch((err) => { console.log(err) });
 });
 
 // display recipe by id
 app.get('/recipe/:id', (req, res) => {
     const id = req.params.id;
-    Recipe.findById(id)
-        .then((recipe) => {
-            User.find()
-                .then((users) => {
-                    res.render('recipe', { title: 'Recipe', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipe, users });
-                })
-                .catch((err) => { console.log(err) });
-        })
-        .catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
+    Recipe.findById(id).then((recipe) => {
+        User.find().then((users) => {
+            res.render('recipe', { title: 'Recipe', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipe, users });
+        }).catch((err) => { console.log(err) });
+    }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
 });
 
 // informatin of how the site works
@@ -85,9 +77,7 @@ app.get('/login', (req, res) => {
 
 // login action
 app.post('/login-submit', async (req, res) => {
-
     const { username, password } = req.body;
-
     let hashed_password = createHash('sha256').update(password).digest('hex');
 
     try {
@@ -143,7 +133,6 @@ app.post('/signup-submit', async (req, res) => {
         else {
             response.password = "ok";
         }
-
         if (password2 === "") {
             response.password2 = "missing";
         } else if (password !== password2) {
@@ -162,11 +151,9 @@ app.post('/signup-submit', async (req, res) => {
                 username: username,
                 password: hashed_password
             });
-            user.save()
-                .then((result) => {
-                    console.log('New user saved to DB');
-                })
-                .catch((err) => console.log(err));
+            user.save().then((result) => {
+                console.log('New user saved to DB');
+            }).catch((err) => console.log(err));
         }
         res.send(response);
     }
@@ -211,31 +198,27 @@ app.post('/create-submit', checkLogin, async (req, res) => {
         preparation_time: preparation_time,
         full_recipe: full_recipe
     });
-    recipe.save()
-        .then((result) => {
-            console.log('recipe saved');
-            res.redirect(`recipe/${result._id}`);
-        })
-        .catch((err) => console.log(err));
+    recipe.save().then((result) => {
+        console.log('recipe saved');
+        res.redirect(`recipe/${result._id}`);
+    }).catch((err) => console.log(err));
 });
 
 // list own recipes (only for logged in users)
 app.get('/my-recipes', checkLogin, (req, res) => {
 
-    Recipe.find({ created_by: req.user.userid })
-        .then((recipes) => {
-            res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipes });
-        })
-        .catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
+    Recipe.find({ created_by: req.user.userid }).then((recipes) => {
+        res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipes, currentUser_id: req.user.id });
+    }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
 });
 
 // list recipes of other people that you saved/liked
 app.get('/saved', checkLogin, (req, res) => {
-    Recipe.find({ '_id': { $in: req.user.saved_recipes } })
-        .then((recipes) => {
-            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'none', recipes });
-        })
-        .catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
+    Recipe.find({ '_id': { $in: req.user.saved_recipes } }).then((recipes) => {
+        User.find().then((users) => {
+            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'none', recipes, users, currentUser_id: req.user.id });
+        }).catch((err) => { console.log(err) });
+    }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
 });
 
 // errorpage
