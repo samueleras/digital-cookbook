@@ -104,7 +104,7 @@ app.post('/login-submit', async (req, res) => {
         } else {
             console.log("Login successful")
             /* delete user.password; */
-            let user = { userid: users[0]._id, username: users[0].username, saved_recipes: users[0].saved_recipes};
+            let user = { userid: users[0]._id, username: users[0].username, saved_recipes: users[0].saved_recipes };
             const token = jwt.sign(user, jwtEncryptionKey, { expiresIn: "1h" });
             res.cookie("token", token, {
                 httpOnly: true
@@ -194,7 +194,7 @@ app.post('/create-submit', checkLogin, async (req, res) => {
     let image_link = "/recipe_images/default.jpg";;
     let image_name = uuid();
 
-    try{
+    try {
         const { image } = req.files;
         if (image && /^image/.test(image.mimetype)) {
             let fileExtension = "." + image.name.split('.').pop();
@@ -236,7 +236,11 @@ app.get('/my-recipes', checkLogin, (req, res) => {
 
 // list recipes of other people that you saved/liked
 app.get('/saved', checkLogin, (req, res) => {
-    res.render('saved', { title: 'Saved Recipes', filename: 'saved', style: 'none', js: 'none' });
+    Recipe.find({ '_id': { $in: req.user.saved_recipes } }) // Wie gettet man alle recipes dessen id im array?
+        .then((recipes) => {
+            res.render('saved', { title: 'Saved Recipes', filename: 'saved-recipes', style: 'none', js: 'none', recipes });
+        })
+        .catch((err) => { res.status(404).render('404', { title: 'Error - 404', filename: '404', style: 'no', js: 'no' }) });
 });
 
 // errorpage
