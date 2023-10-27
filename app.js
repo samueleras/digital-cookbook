@@ -60,7 +60,7 @@ app.get('/recipe/:id', (req, res) => {
     const id = req.params.id;
     Recipe.findById(id).then((recipe) => {
         User.find().then((users) => {
-            res.render('recipe', { title: 'Recipe', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipe, users });
+            res.render('recipe', { title: 'Recipe', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipe, users, currentUser: req.user ??= undefined });
         }).catch((err) => { console.log(err) });
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });
@@ -209,14 +209,24 @@ app.post('/create-submit', checkLogin, async (req, res) => {
 
 // list own recipes (only for logged in users)
 app.get('/my-recipes', checkLogin, (req, res) => {
-
     Recipe.find({ created_by: req.user.userid }).then((recipes) => {
         res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipes, currentUser: req.user ??= undefined });
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });
 
+// save a recipe
+app.get('/recipe/save/:id', checkLogin, async (req, res) => {
+    let user = await User.findById(req.user.userid);
+    user.saved_recipes.push(req.params.id);
+    console.log(user)
+    user.save().then((result) => {
+        console.log('New user saved to DB');
+    }).catch((err) => console.log(err));
+    res.redirect("/saved-recipes");         //später link redirect preventen und ggf per javascript diese gethandler aufrufen
+});
+
 // list recipes of other people that you saved/liked
-app.get('/saved', checkLogin, (req, res) => {
+app.get('/saved-recipes', checkLogin, (req, res) => {
     Recipe.find({ '_id': { $in: req.user.saved_recipes } }).then((recipes) => {
         User.find().then((users) => {
             res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipes, users, currentUser: req.user ??= undefined });
