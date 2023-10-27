@@ -224,7 +224,7 @@ app.get('/my-recipes', checkLogin, (req, res) => {
 
     Recipe.find({ created_by: req.user.userid })
         .then((recipes) => {
-            res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', style: 'no', jsfile: 'no', recipes });
+            res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipes });
         })
         .catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
 });
@@ -233,7 +233,7 @@ app.get('/my-recipes', checkLogin, (req, res) => {
 app.get('/saved', checkLogin, (req, res) => {
     Recipe.find({ '_id': { $in: req.user.saved_recipes } })
         .then((recipes) => {
-            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', style: 'no', jsfile: 'none', recipes });
+            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'none', recipes });
         })
         .catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
 });
