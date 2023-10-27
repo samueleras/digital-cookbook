@@ -2,8 +2,8 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
-const User = require('./models/user')
-const Recipe = require('./models/recipe')
+const User = require('./DBmodels/user')
+const Recipe = require('./DBmodels/recipe')
 const cookieParser = require("cookie-parser");
 const jwt = require('jsonwebtoken');
 const jwtEncryptionKey = require('./modules/jwtEncryptionKey.js');
