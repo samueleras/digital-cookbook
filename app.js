@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 const jwt = require('jsonwebtoken');
 const jwtEncryptionKey = require('./modules/jwtEncryptionKey.js');
 const jwtAuth = require('./modules/jwtAuth.js');
+const checkLogin = require('./modules/checkLogin.js');
 const bodyParser = require('body-parser');
 const { createHash } = require('crypto');
 const fileUpload = require('express-fileupload');
@@ -43,6 +44,9 @@ app.use(cookieParser());
 
 // Use the express-fileupload middleware
 app.use(fileUpload());
+
+// Check for userlogin
+app.use(jwtAuth());
 
 // home page for everyone to see, with everyones recipes
 app.get('/', (req, res) => {
@@ -93,13 +97,14 @@ app.post('/login-submit', async (req, res) => {
     try {
         const users = await User.find({ username: username });
 
-        let user = { userid: users[0]._id, username: users[0].username, password: users[0].password };
+        /* let user = { userid: users[0]._id, username: users[0].username, password: users[0].password }; */
 
-        if (user.password !== hashed_password) {
+        if (/* user. */password !== hashed_password) {
             throw new Error("On login: Password is wrong!")
         } else {
             console.log("Login successful")
-            delete user.password;
+            /* delete user.password; */
+            let user = { userid: users[0]._id, username: users[0].username, saved_recipes: users[0].saved_recipes};
             const token = jwt.sign(user, jwtEncryptionKey, { expiresIn: "1h" });
             res.cookie("token", token, {
                 httpOnly: true
@@ -178,11 +183,11 @@ app.post('/signup-submit', async (req, res) => {
 
 
 // create a new recipes (only for logged in users)
-app.get('/create', jwtAuth, (req, res) => {
+app.get('/create', checkLogin, (req, res) => {
     res.render('create', { title: 'Create Recipe', filename: 'create', style: 'no', js: 'no' });
 });
 
-app.post('/create-submit', jwtAuth, async (req, res) => {
+app.post('/create-submit', checkLogin, async (req, res) => {
 
     const { name, author_rating, difficulty, preparation_time, full_recipe } = req.body;
 
@@ -219,7 +224,7 @@ app.post('/create-submit', jwtAuth, async (req, res) => {
 });
 
 // list own recipes (only for logged in users)
-app.get('/my-recipes', jwtAuth, (req, res) => {
+app.get('/my-recipes', checkLogin, (req, res) => {
 
     Recipe.find({ created_by: req.user.userid })
         .then((recipes) => {
@@ -227,13 +232,12 @@ app.get('/my-recipes', jwtAuth, (req, res) => {
         })
         .catch((err) => { res.status(404).render('404', { title: 'Error - 404', filename: '404', style: 'no', js: 'no' }) });
 
-
 });
 
 // list recipes of other people that you saved/liked
-/* app.get('/saved', (req, res) => {
+app.get('/saved', checkLogin, (req, res) => {
     res.render('saved', { title: 'Saved Recipes', filename: 'saved', style: 'none', js: 'none' });
-}); */
+});
 
 // errorpage
 app.use((req, res) => {
