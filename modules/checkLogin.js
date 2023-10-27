@@ -1,10 +1,10 @@
-module.exports = async (req, res, next) => {
+module.exports = (req, res, next) => {
 
-    if (req.user != 'undefined') {
+    if (typeof req.user != 'undefined') {
         next();
     }
     else {
-        res.redirect("/login")
+        res.redirect("/login");
     }
 
 }
