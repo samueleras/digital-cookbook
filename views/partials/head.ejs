@@ -1,12 +1,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <% if(typeof defaultstyle != 'undefined' && defaultstyle == 'yes') %>
     <link rel="stylesheet" href="/style.css">
-    <% if(typeof style != 'undefined' && style == 'yes' && typeof filename != 'undefined') { %>
-    <link rel="stylesheet" href="/<%= filename %>Style.css">
     <% } %>
-    <% if(typeof js != 'undefined' && js == 'yes' && typeof filename != 'undefined') { %>
-    <script src="/<%= filename %>Script.js" defer></script>
+    <% if(typeof stylefile != 'undefined' && stylefile != 'no') { %>
+    <link rel="stylesheet" href="/<%= stylefile %>Style.css">
+    <% } %>
+    <% if(typeof jsfile != 'undefined' && jsfile != 'no') { %>
+    <script src="/<%= jsfile %>Script.js" defer></script>
     <% } %>
     <title>Digital Cookbook | <%= title %></title>
 </head>

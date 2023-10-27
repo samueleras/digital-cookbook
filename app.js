@@ -52,7 +52,7 @@ app.get('/', (req, res) => {
         .then((recipes) => {
             User.find()
                 .then((users) => {
-                    res.render('index', { title: 'Home', ejsfile: 'home', defaultstyle: 'yes', stylefile: 'homeStyle', jsfile: 'no', recipes, users });
+                    res.render('index', { title: 'Home', ejsfile: 'home', defaultstyle: 'yes', stylefile: 'home', jsfile: 'no', recipes, users });
                 })
                 .catch((err) => { console.log(err) });
         })
@@ -80,7 +80,7 @@ app.get('/about', (req, res) => {
 
 // login
 app.get('/login', (req, res) => {
-    res.render('login', { title: 'Login/SignUp', ejsfile: 'login', defaultstyle: 'no', stylefile: 'loginStyle' , jsfile: 'yes' });
+    res.render('login', { title: 'Login/SignUp', ejsfile: 'login', defaultstyle: 'no', stylefile: 'login' , jsfile: 'yes' });
 });
 
 // login action
@@ -116,7 +116,7 @@ app.post('/login-submit', async (req, res) => {
 
 // signup
 app.get('/signup', (req, res) => {
-    res.render('signup', { title: 'SignUp', ejsfile: 'signup', defaultstyle: 'no', stylefile: 'signupStyle' , jsfile: 'yes' });
+    res.render('signup', { title: 'SignUp', ejsfile: 'signup', defaultstyle: 'no', stylefile: 'signup' , jsfile: 'yes' });
 });
 
 // signup action
