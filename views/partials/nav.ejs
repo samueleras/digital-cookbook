@@ -22,9 +22,15 @@
             </a>
         </li>
         <li class="nav-item">
+            <% if( typeof currentUser === 'undefined') { %>
             <a href="/login" class="nav-link">
                 <span class="link-text">Login</span>
             </a>
+            <% } else { %>
+            <a href="/logout" class="nav-link">
+                <span class="link-text">Logout</span>
+            </a>
+            <% } %>
         </li>
     </ul>
 </nav>
