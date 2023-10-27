@@ -43,14 +43,14 @@ app.use(cookieParser());
 app.use(fileUpload());
 
 // Check for userlogin
-app.use(jwtAuth());
+app.use(jwtAuth);
 
 // home page for everyone to see, with everyones recipes
 app.get('/', (req, res) => {
 
     Recipe.find().sort({ createdAt: -1 }).then((recipes) => {
         User.find().then((users) => {
-            res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'home', jsfile: 'no', recipes, users, currentUser_id: req.user.id });
+            res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'home', jsfile: 'no', recipes, users, currentUser: (typeof req.user === 'undefined') ? undefined : req.user });
         }).catch((err) => { console.log(err) });
     }).catch((err) => { console.log(err) });
 });
@@ -62,17 +62,17 @@ app.get('/recipe/:id', (req, res) => {
         User.find().then((users) => {
             res.render('recipe', { title: 'Recipe', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipe, users });
         }).catch((err) => { console.log(err) });
-    }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
+    }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: (typeof req.user === 'undefined') ? undefined : req.user}) });
 });
 
 // informatin of how the site works
 app.get('/about', (req, res) => {
-    res.render('about', { title: 'About', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' });
+    res.render('about', { title: 'About', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: (typeof req.user === 'undefined') ? undefined : req.user });
 });
 
 // login
 app.get('/login', (req, res) => {
-    res.render('login', { title: 'Login/SignUp', defaultstyle: 'no', stylefile: 'login', jsfile: 'yes' });
+    res.render('login', { title: 'Login/SignUp', defaultstyle: 'no', stylefile: 'login', jsfile: 'login'});
 });
 
 // login action
@@ -83,13 +83,10 @@ app.post('/login-submit', async (req, res) => {
     try {
         const users = await User.find({ username: username });
 
-        /* let user = { userid: users[0]._id, username: users[0].username, password: users[0].password }; */
-
-        if (/* user. */password !== hashed_password) {
+        if ( users[0].password !== hashed_password) {
             throw new Error("On login: Password is wrong!")
         } else {
             console.log("Login successful")
-            /* delete user.password; */
             let user = { userid: users[0]._id, username: users[0].username, saved_recipes: users[0].saved_recipes };
             const token = jwt.sign(user, jwtEncryptionKey, { expiresIn: "1h" });
             res.cookie("token", token, {
@@ -104,9 +101,15 @@ app.post('/login-submit', async (req, res) => {
     }
 });
 
+// login action
+app.get('/logout', checkLogin, async (req, res) => {
+    res.clearCookie("token");
+    res.redirect("/");
+});
+
 // signup
 app.get('/signup', (req, res) => {
-    res.render('signup', { title: 'SignUp', defaultstyle: 'no', stylefile: 'signup', jsfile: 'yes' });
+    res.render('signup', { title: 'SignUp', defaultstyle: 'no', stylefile: 'signup', jsfile: 'signup', currentUser: (typeof req.user === 'undefined') ? undefined : req.user });
 });
 
 // signup action
@@ -166,7 +169,7 @@ app.post('/signup-submit', async (req, res) => {
 
 // create a new recipes (only for logged in users)
 app.get('/create', checkLogin, (req, res) => {
-    res.render('create', { title: 'Create Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no' });
+    res.render('create', { title: 'Create Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: (typeof req.user === 'undefined') ? undefined : req.user });
 });
 
 // submit created recipe
@@ -208,7 +211,7 @@ app.post('/create-submit', checkLogin, async (req, res) => {
 app.get('/my-recipes', checkLogin, (req, res) => {
 
     Recipe.find({ created_by: req.user.userid }).then((recipes) => {
-        res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipes, currentUser_id: req.user.id });
+        res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipes, currentUser: (typeof req.user === 'undefined') ? undefined : req.user });
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
 });
 
@@ -216,7 +219,7 @@ app.get('/my-recipes', checkLogin, (req, res) => {
 app.get('/saved', checkLogin, (req, res) => {
     Recipe.find({ '_id': { $in: req.user.saved_recipes } }).then((recipes) => {
         User.find().then((users) => {
-            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'none', recipes, users, currentUser_id: req.user.id });
+            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipes, users, currentUser: (typeof req.user === 'undefined') ? undefined : req.user });
         }).catch((err) => { console.log(err) });
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no' }) });
 });

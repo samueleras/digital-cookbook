@@ -6,7 +6,7 @@ module.exports = (req, res, next) => {
 
     try {
         const token = req.cookies.token;
-        const userFromToken = jwt.verify(token, jwtEncryptionKey);       
+        const userFromToken = jwt.verify(token, jwtEncryptionKey);     
         User.findById(userFromToken.userid).then((user) => {
             req.user = { userid: user._id, username: user.username, saved_recipes: user.saved_recipes};
             next();
@@ -14,7 +14,6 @@ module.exports = (req, res, next) => {
     } catch {
         res.clearCookie("token");
         next();
-/*         res.redirect("/login"); */
     }
 
 }
