@@ -13,6 +13,7 @@ const bodyParser = require('body-parser');
 const { createHash } = require('crypto');
 const fileUpload = require('express-fileupload');
 const { v4: uuid } = require('uuid');
+const fs = require('fs');
 
 // express app
 const app = express();
@@ -72,7 +73,7 @@ app.get('/about', (req, res) => {
 
 // login
 app.get('/login', (req, res) => {
-    res.render('login', { title: 'Login/SignUp', defaultstyle: 'no', stylefile: 'login', jsfile: 'login'});
+    res.render('login', { title: 'Login/SignUp', defaultstyle: 'no', stylefile: 'login', jsfile: 'login' });
 });
 
 // login action
@@ -83,7 +84,7 @@ app.post('/login-submit', async (req, res) => {
     try {
         const users = await User.find({ username: username });
 
-        if ( users[0].password !== hashed_password) {
+        if (users[0].password !== hashed_password) {
             throw new Error("On login: Password is wrong!")
         } else {
             console.log("Login successful")
@@ -218,11 +219,39 @@ app.get('/my-recipes', checkLogin, (req, res) => {
 app.get('/recipe/save/:id', checkLogin, async (req, res) => {
     let user = await User.findById(req.user.userid);
     user.saved_recipes.push(req.params.id);
-    console.log(user)
     user.save().then((result) => {
-        console.log('New user saved to DB');
+        console.log('Recipe saved for user ' + req.user.username);
+        res.redirect("/saved-recipes");         //später link redirect preventen und ggf per javascript diese gethandler aufrufen
     }).catch((err) => console.log(err));
-    res.redirect("/saved-recipes");         //später link redirect preventen und ggf per javascript diese gethandler aufrufen
+});
+
+// unsave a recipe
+app.get('/recipe/unsave/:id', checkLogin, async (req, res) => {
+    let user = await User.findById(req.user.userid);
+    user.saved_recipes.splice(user.saved_recipes.indexOf(req.params.id), 1);
+    user.save().then((result) => {
+        console.log('Recipe ' + req.params.id + ' unsaved for user ' + req.user.username);
+        res.redirect("/saved-recipes");  
+    }).catch((err) => console.log('Failed saving recipe for user ' + err)); //später link redirect preventen und ggf per javascript diese gethandler aufrufen
+       
+});
+
+// delete a recipe
+app.get('/recipe/delete/:id', checkLogin, async (req, res) => {
+    try {
+        let recipe = await Recipe.findById(req.params.id);
+        if( recipe.image_link != "/recipe_images/default.jpg"){
+            let absolute_image_link = __dirname + "/public" + recipe.image_link;
+            if(fs.existsSync(absolute_image_link)){
+                fs.unlink(absolute_image_link, (err) => console.log(err));
+            }
+        }
+        await Recipe.findByIdAndDelete(req.params.id);
+        console.log("Deleted recipe with id: " + req.params.id)
+    } catch (err) {
+        console.log("Failed deleting recipe: " + err);
+    }
+    res.redirect("/my-recipes");         //später link redirect preventen und ggf per javascript diese gethandler aufrufen und auf DELETE umstellen anstatt GET
 });
 
 // list recipes of other people that you saved/liked
@@ -238,3 +267,8 @@ app.get('/saved-recipes', checkLogin, (req, res) => {
 app.use((req, res) => {
     res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined });
 });
+
+
+//TODO
+//Edit
+//Delete user button? Maybe account page??
