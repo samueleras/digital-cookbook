@@ -15,16 +15,21 @@
                             <img style="width: 100%; aspect-ratio: 1;" src="<%= recipe.image_link %>" alt="">
                         </div>
                         <% if( typeof currentUser != 'undefined' && recipe.created_by == currentUser.userid) { %>
-                        <div id="edit_delete">
+                        <div class="edit_delete">
                             <a id="edit" href="/recipe/edit/<%= recipe._id %>">Edit</a>
                             <a id="delte" href="/recipe/delete/<%= recipe._id %>">Delete</a>
                         </div>
                         <% } %>
-                        <% if( typeof currentUser != 'undefined' && recipe.created_by != currentUser.userid) { %>
-                            <div id="save_container">
+                        <% if( typeof currentUser != 'undefined' && recipe.created_by != currentUser.userid ) { %>
+                            <% if( !currentUser.saved_recipes.includes(recipe._id) ) { %>
+                            <div class="save_container">
                                 <a id="save" href="/recipe/save/<%= recipe._id %>">Save</a>
                             </div>
-                            <% } %>
+                        <% } else { %>
+                            <div class="save_container">
+                                <a id="unsave" href="/recipe/unsave/<%= recipe._id %>">Unsave</a>
+                            </div>
+                        <% } } %>
                         <div class="recipe-info">
                             <h2><%= recipe.name %></h2>
                             <p>Author Rating: <%= recipe.author_rating %></p>
