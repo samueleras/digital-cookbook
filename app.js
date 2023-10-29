@@ -61,7 +61,7 @@ app.get('/recipe/:id', (req, res) => {
     const id = req.params.id;
     Recipe.findById(id).then((recipe) => {
         User.find().then((users) => {
-            res.render('recipe', { title: 'Recipe', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipe, users, currentUser: req.user ??= undefined });
+            res.render('display-recipe', { title: 'Recipe', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipe, users, currentUser: req.user ??= undefined });
         }).catch((err) => { console.log(err) });
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });
@@ -171,6 +171,11 @@ app.post('/signup-submit', async (req, res) => {
 // create a new recipes (only for logged in users)
 app.get('/create', checkLogin, (req, res) => {
     res.render('create', { title: 'Create Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined });
+});
+
+// edit a recipes (only for logged in users)
+app.get('/recipe/edit/:id', checkLogin, (req, res) => {
+    res.render('create', { title: 'Edit Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined });
 });
 
 // submit created recipe
