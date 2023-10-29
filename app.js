@@ -48,7 +48,6 @@ app.use(jwtAuth);
 
 // home page for everyone to see, with everyones recipes
 app.get('/', (req, res) => {
-
     Recipe.find().sort({ createdAt: -1 }).then((recipes) => {
         User.find().then((users) => {
             res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'home', jsfile: 'no', recipes, users, currentUser: req.user ??= undefined });
@@ -102,7 +101,7 @@ app.post('/login-submit', async (req, res) => {
     }
 });
 
-// login action
+// logout action
 app.get('/logout', checkLogin, async (req, res) => {
     res.clearCookie("token");
     res.redirect("/");
@@ -169,29 +168,27 @@ app.post('/signup-submit', async (req, res) => {
 });
 
 // create a new recipes (only for logged in users)
-app.get('/create', checkLogin, (req, res) => {
-    res.render('create-or-edit-recipe', { title: 'Create Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined, edit_create: 'Create'});
+app.get('/recipe/create', checkLogin, (req, res) => {
+    res.render('create-or-edit-recipe', { title: 'Create Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined, edit_create: 'Create' });
 });
 
 // edit a recipes (only for logged in users)
 app.get('/recipe/edit/:id', checkLogin, async (req, res) => {
     try {
         let recipe = await Recipe.findById(req.params.id);
-        res.render('create-or-edit-recipe', { title: 'Edit Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined, edit_create: 'Edit', recipe});
+        res.render('create-or-edit-recipe', { title: 'Edit Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined, edit_create: 'Edit', recipe });
     } catch (err) {
         console.log("Failed to edit recipe: " + err);
     }
-
-
-
 });
 
 // submit created recipe
-app.post('/create-submit', checkLogin, async (req, res) => {
+app.post('/create-edit-submit', checkLogin, async (req, res) => {
 
-    const { name, author_rating, difficulty, preparation_time, full_recipe } = req.body;
+    const { mode, name, author_rating, difficulty, preparation_time, full_recipe } = req.body;
 
-    let image_link = "/recipe_images/default.jpg";;
+    let default_image_link = "/recipe_images/default.jpg";
+    let image_link = default_image_link;
     let image_name = uuid();
 
     try {
@@ -206,17 +203,33 @@ app.post('/create-submit', checkLogin, async (req, res) => {
         console.log("No picture uploaded... using default");
     }
 
-    const recipe = new Recipe({
-        created_by: req.user.userid,
-        name: name,
-        image_link: image_link,
-        author_rating: author_rating,
-        difficulty: difficulty,
-        preparation_time: preparation_time,
-        full_recipe: full_recipe
-    });
+    let recipe;
+
+    if (mode === 'create') {
+        recipe = new Recipe({
+            created_by: req.user.userid,
+            name: name,
+            image_link: image_link,
+            difficulty: difficulty,
+            preparation_time: preparation_time,
+            full_recipe: full_recipe
+        });
+    } else {
+        try {
+            recipe = await Recipe.findById(mode);
+            recipe.name = name;
+            if (image_link != default_image_link) {
+                recipe.image_link = image_link;
+            }
+            recipe.difficulty = difficulty;
+            recipe.preparation_time = preparation_time;
+            recipe.full_recipe = full_recipe;
+        } catch (err) {
+            console.log("Failed to find recipe for edit: " + err);
+        }
+    }
     recipe.save().then((result) => {
-        console.log('recipe saved');
+        console.log('recipe saved/edited');
         res.redirect(`recipe/${result._id}`);
     }).catch((err) => console.log(err));
 });
@@ -226,6 +239,24 @@ app.get('/my-recipes', checkLogin, (req, res) => {
     Recipe.find({ created_by: req.user.userid }).then((recipes) => {
         res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipes, currentUser: req.user ??= undefined });
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
+});
+
+// delete a recipe
+app.get('/recipe/delete/:id', checkLogin, async (req, res) => {
+    try {
+        let recipe = await Recipe.findById(req.params.id);
+        if (recipe.image_link != "/recipe_images/default.jpg") {
+            let absolute_image_link = __dirname + "/public" + recipe.image_link;
+            if (fs.existsSync(absolute_image_link)) {
+                fs.unlink(absolute_image_link, (err) => console.log(err));
+            }
+        }
+        await Recipe.findByIdAndDelete(req.params.id);
+        console.log("Deleted recipe with id: " + req.params.id)
+    } catch (err) {
+        console.log("Failed deleting recipe: " + err);
+    }
+    res.redirect("/my-recipes");         //später link redirect preventen und ggf per javascript diese gethandler aufrufen und auf DELETE umstellen anstatt GET
 });
 
 // save a recipe
@@ -238,35 +269,6 @@ app.get('/recipe/save/:id', checkLogin, async (req, res) => {
     }).catch((err) => console.log(err));
 });
 
-// unsave a recipe
-app.get('/recipe/unsave/:id', checkLogin, async (req, res) => {
-    let user = await User.findById(req.user.userid);
-    user.saved_recipes.splice(user.saved_recipes.indexOf(req.params.id), 1);
-    user.save().then((result) => {
-        console.log('Recipe ' + req.params.id + ' unsaved for user ' + req.user.username);
-        res.redirect("/saved-recipes");  
-    }).catch((err) => console.log('Failed saving recipe for user ' + err)); //später link redirect preventen und ggf per javascript diese gethandler aufrufen
-       
-});
-
-// delete a recipe
-app.get('/recipe/delete/:id', checkLogin, async (req, res) => {
-    try {
-        let recipe = await Recipe.findById(req.params.id);
-        if( recipe.image_link != "/recipe_images/default.jpg"){
-            let absolute_image_link = __dirname + "/public" + recipe.image_link;
-            if(fs.existsSync(absolute_image_link)){
-                fs.unlink(absolute_image_link, (err) => console.log(err));
-            }
-        }
-        await Recipe.findByIdAndDelete(req.params.id);
-        console.log("Deleted recipe with id: " + req.params.id)
-    } catch (err) {
-        console.log("Failed deleting recipe: " + err);
-    }
-    res.redirect("/my-recipes");         //später link redirect preventen und ggf per javascript diese gethandler aufrufen und auf DELETE umstellen anstatt GET
-});
-
 // list recipes of other people that you saved/liked
 app.get('/saved-recipes', checkLogin, (req, res) => {
     Recipe.find({ '_id': { $in: req.user.saved_recipes } }).then((recipes) => {
@@ -275,6 +277,19 @@ app.get('/saved-recipes', checkLogin, (req, res) => {
         }).catch((err) => { console.log(err) });
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });
+
+// unsave a recipe
+app.get('/recipe/unsave/:id', checkLogin, async (req, res) => {
+    let user = await User.findById(req.user.userid);
+    user.saved_recipes.splice(user.saved_recipes.indexOf(req.params.id), 1);
+    user.save().then((result) => {
+        console.log('Recipe ' + req.params.id + ' unsaved for user ' + req.user.username);
+        res.redirect("/saved-recipes");
+    }).catch((err) => console.log('Failed saving recipe for user ' + err)); //später link redirect preventen und ggf per javascript diese gethandler aufrufen
+
+});
+
+
 
 // errorpage
 app.use((req, res) => {

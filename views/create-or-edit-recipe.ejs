@@ -9,10 +9,14 @@
             <main>
 
                 <!-- Anfang Formular -->
-                <form id="form-new-recipe" class="form" action="/create-submit" method="POST" enctype="multipart/form-data">
+                <form id="form-new-recipe" class="form" action="/create-edit-submit" method="POST" enctype="multipart/form-data">
 
                     <h1><%= title %></h1>
 
+                    <!-- Creation or Edit -->
+                    <div style="display: none" class="input-control">
+                        <input type="text" id="mode" name="mode" value='<%= (typeof recipe === "undefined") ? "create" : recipe._id %>'>
+                    </div>
                     <!-- Recipe Name -->
                     <div class="input-control">
                         <label for="user">Recipe Name:</label>
