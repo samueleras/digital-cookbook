@@ -34,7 +34,31 @@
                             <% let username = '"deleted user"'; users.forEach(user => { if(user._id == recipe.created_by){ username = user.username}});%>
                             <p>Created by <%= username %></p>
                             <% } %>
-                            <p>Rating: <%= recipe.rating %></p>
+                            <p>Rating: <%= recipe.rating %> (<%= recipe.ratings.length %>)</p>
+                            
+                            <% if( typeof currentUser != 'undefined') { %>
+                            <% let currentUsersRating = ""; %>
+                            <% let ratingLabel = "Rate this recipe:"; %>
+                            <% let submit = "Rate:"; %>
+                            <% for( let rating of recipe.ratings){ if(rating.userid === currentUser.userid){ currentUsersRating = rating.rating; ratingLabel = "Your Rating:"; submit = "Change Rating"; } } %>
+                            <form id="form-rating" class="form" action="/recipe/rate/" method="POST" enctype="multipart/form-data">
+                                <div class="input-control">
+                                    <label for="rating"><%= ratingLabel %></label>
+                                    <select name="rating" id="rating" size="1">
+                                        <option value=1 <% if(typeof recipe !== "undefined" && currentUsersRating === 1){ %> selected <% } %>>1 Star</option>
+                                        <option value=2 <% if(typeof recipe !== "undefined" && currentUsersRating === 2){ %> selected <% } %>>2 Stars</option>
+                                        <option value=3 <% if(typeof recipe !== "undefined" && currentUsersRating === 3){ %> selected <% } %>>3 Stars</option>
+                                        <option value=4 <% if(typeof recipe !== "undefined" && currentUsersRating === 4){ %> selected <% } %>>4 Stars</option>
+                                        <option value=5 <% if(typeof recipe !== "undefined" && currentUsersRating === 5){ %> selected <% } %>>5 Stars</option>
+                                    </select>
+                                    <!-- recipeid -->
+                                    <div style="display: none" class="input-control">
+                                        <input type="text" id="id" name="id" value='<%= recipe._id %>'>
+                                    </div>
+                                    <button type="submit"><%= submit %></button>
+                            </form>
+                            <% } %>
+
                             <p>Preparation Time: <%= recipe.preparation_time %> min</p>
                             <p>Difficulty: <%= recipe.difficulty %></p>
                         </div>
