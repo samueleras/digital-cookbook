@@ -56,7 +56,7 @@ app.get('/', (req, res) => {
 });
 
 // display recipe by id
-app.get('/recipe/:id', (req, res) => {
+app.get('/recipe/display/:id', (req, res) => {
     const id = req.params.id;
     Recipe.findById(id).then((recipe) => {
         User.find().then((users) => {
@@ -296,7 +296,7 @@ app.get('/saved-recipes', checkLogin, (req, res) => {
 app.post('/recipe/rate', checkLogin, async (req, res) => {
     const { rating, id } = req.body;
     let recipe = await Recipe.findById(id);
-    let ratingsobj = { rating: rating, userid: req.user.userid, test: "test"};
+    let ratingsobj = { rating: rating, userid: req.user.userid};
     console.log(ratingsobj)
     recipe.ratings.push(ratingsobj);
     console.log(recipe.ratings);

@@ -10,7 +10,7 @@
 
             <% if(recipes.length > 0) { %>
                 <% recipes.forEach(recipe => { %>
-                    <a class="recipe" href="/recipe/<%= recipe._id %>">
+                    <a class="recipe" href="/recipe/display/<%= recipe._id %>">
                         <div class="recipe-image">
                             <img style="width: 100%; aspect-ratio: 1;" src="<%= recipe.image_link %>" alt="">
                         </div>
