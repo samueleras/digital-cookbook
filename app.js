@@ -231,7 +231,7 @@ app.post('/create-edit-submit', checkLogin, async (req, res) => {
     }
     recipe.save().then((result) => {
         console.log('recipe saved/edited');
-        res.redirect(`recipe/${result._id}`);
+        res.redirect(`recipe/display/${result._id}`);
     }).catch((err) => console.log(err));
 });
 
@@ -290,28 +290,29 @@ app.get('/saved-recipes', checkLogin, (req, res) => {
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });
 
-
-
 // rate a recipe
 app.post('/recipe/rate', checkLogin, async (req, res) => {
     const { rating, id } = req.body;
     let recipe = await Recipe.findById(id);
-    let ratingsobj = { rating: rating, userid: req.user.userid};
-    console.log(ratingsobj)
-    recipe.ratings.push(ratingsobj);
-    console.log(recipe.ratings);
+    // check if there already is rating written by this user and delete if so
+    for(let rating of recipe.ratings){
+        if(rating.userid.toString() == req.user.userid.toString()){
+            let position = recipe.ratings.indexOf(rating);
+            console.log(position);
+            recipe.ratings.splice(position, 1);
+        }
+    }
+    recipe.ratings.push({ rating: rating, userid: req.user.userid});
     let ratingsum = 0;
     for( let rating of recipe.ratings){
-        ratingsum += rating.rating;
+        ratingsum += parseFloat(rating.rating);
     }
     recipe.rating = ratingsum / recipe.ratings.length;
     recipe.save().then((result) => {
         console.log('Recipe rating saved');
-        res.redirect(`/recipe/${result._id}`);
+        res.redirect(`/recipe/display/${result._id}`);
     }).catch((err) => console.log(err));
 });
-
-
 
 // errorpage
 app.use((req, res) => {
@@ -320,5 +321,4 @@ app.use((req, res) => {
 
 
 //TODO
-//Edit
 //Delete user button? Maybe account page??
