@@ -170,17 +170,20 @@ app.post('/signup-submit', async (req, res) => {
 
 // create a new recipes (only for logged in users)
 app.get('/create', checkLogin, (req, res) => {
-    res.render('create-or-edit', { title: 'Create Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined, edit_create: 'create'});
+    res.render('create-or-edit-recipe', { title: 'Create Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined, edit_create: 'Create'});
 });
 
 // edit a recipes (only for logged in users)
-app.get('/recipe/edit/:id', checkLogin, (req, res) => {
-    res.render('create-or-edit', { title: 'Edit Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined, edit_create: 'edit' });
-});
+app.get('/recipe/edit/:id', checkLogin, async (req, res) => {
+    try {
+        let recipe = await Recipe.findById(req.params.id);
+        res.render('create-or-edit-recipe', { title: 'Edit Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined, edit_create: 'Edit', recipe});
+    } catch (err) {
+        console.log("Failed to edit recipe: " + err);
+    }
 
-// edit a recipes (only for logged in users)
-app.get('/recipe/edit/:id', checkLogin, (req, res) => {
-    res.render('create', { title: 'Edit Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined });
+
+
 });
 
 // submit created recipe

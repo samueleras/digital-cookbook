@@ -14,10 +14,6 @@ const recipeSchema = new Schema({
         type: String,
         required: true
     },
-    author_rating: {
-        type: Number,
-        required: true
-    },
     difficulty: {
         type: String,
         required: true
@@ -30,11 +26,11 @@ const recipeSchema = new Schema({
         type: String,
         required: true
     },
-    public_ratings: [{
+    ratings: [{
         rating : Number,
         user_id : String
     }],
-    public_rating: {
+    rating: {
         type: String
     },
 }, { timestamps: true });
