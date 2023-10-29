@@ -169,6 +169,7 @@ app.post('/signup-submit', async (req, res) => {
 
 // create a new recipes (only for logged in users)
 app.get('/recipe/create', checkLogin, (req, res) => {
+    console.log("test");
     res.render('create-or-edit-recipe', { title: 'Create Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined, edit_create: 'Create' });
 });
 
@@ -269,15 +270,6 @@ app.get('/recipe/save/:id', checkLogin, async (req, res) => {
     }).catch((err) => console.log(err));
 });
 
-// list recipes of other people that you saved/liked
-app.get('/saved-recipes', checkLogin, (req, res) => {
-    Recipe.find({ '_id': { $in: req.user.saved_recipes } }).then((recipes) => {
-        User.find().then((users) => {
-            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipes, users, currentUser: req.user ??= undefined });
-        }).catch((err) => { console.log(err) });
-    }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
-});
-
 // unsave a recipe
 app.get('/recipe/unsave/:id', checkLogin, async (req, res) => {
     let user = await User.findById(req.user.userid);
@@ -287,6 +279,36 @@ app.get('/recipe/unsave/:id', checkLogin, async (req, res) => {
         res.redirect("/saved-recipes");
     }).catch((err) => console.log('Failed saving recipe for user ' + err)); //später link redirect preventen und ggf per javascript diese gethandler aufrufen
 
+});
+
+// list recipes of other people that you saved/liked
+app.get('/saved-recipes', checkLogin, (req, res) => {
+    Recipe.find({ '_id': { $in: req.user.saved_recipes } }).then((recipes) => {
+        User.find().then((users) => {
+            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipes, users, currentUser: req.user ??= undefined });
+        }).catch((err) => { console.log(err) });
+    }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
+});
+
+
+
+// rate a recipe
+app.post('/recipe/rate', checkLogin, async (req, res) => {
+    const { rating, id } = req.body;
+    let recipe = await Recipe.findById(id);
+    let ratingsobj = { rating: rating, userid: req.user.userid, test: "test"};
+    console.log(ratingsobj)
+    recipe.ratings.push(ratingsobj);
+    console.log(recipe.ratings);
+    let ratingsum = 0;
+    for( let rating of recipe.ratings){
+        ratingsum += rating.rating;
+    }
+    recipe.rating = ratingsum / recipe.ratings.length;
+    recipe.save().then((result) => {
+        console.log('Recipe rating saved');
+        res.redirect(`/recipe/${result._id}`);
+    }).catch((err) => console.log(err));
 });
 
 
