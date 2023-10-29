@@ -170,7 +170,12 @@ app.post('/signup-submit', async (req, res) => {
 
 // create a new recipes (only for logged in users)
 app.get('/create', checkLogin, (req, res) => {
-    res.render('create', { title: 'Create Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined });
+    res.render('create-or-edit', { title: 'Create Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined, edit_create: 'create'});
+});
+
+// edit a recipes (only for logged in users)
+app.get('/recipe/edit/:id', checkLogin, (req, res) => {
+    res.render('create-or-edit', { title: 'Edit Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined, edit_create: 'edit' });
 });
 
 // edit a recipes (only for logged in users)
