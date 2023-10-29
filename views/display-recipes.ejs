@@ -32,9 +32,9 @@
                         <% } } %>
                         <div class="recipe-info">
                             <h2><%= recipe.name %></h2>
-                            <p>Author Rating: <%= recipe.author_rating %></p>
-                            <p>Public Rating: <%= recipe.public_rating %></p>
+                            <p>Rating: <%= recipe.rating %></p>
                             <p>Preparation Time: <%= recipe.preparation_time %> min</p>
+                            <p>Difficulty: <%= recipe.difficulty %></p>
                             <% if( typeof users != 'undefined') { %>
                             <% let username = '"deleted user"'; users.forEach(user => { if(user._id == recipe.created_by){ username = user.username}});%>
                             <p>Created by <%= username %></p>
