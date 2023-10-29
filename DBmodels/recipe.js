@@ -26,10 +26,10 @@ const recipeSchema = new Schema({
         type: String,
         required: true
     },
-    ratings: [{
-        rating : Number,
-        user_id : String
-    }],
+    ratings: {
+        type: Array,
+        "default" : []
+    },
     rating: {
         type: String
     },
