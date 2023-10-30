@@ -1,6 +1,8 @@
 <!-- Nav/Header -->
-<nav class="navbar">
-    <ul class="flexcontainer-navbar">
+<nav>
+    <div class="navbar-background"></div>
+
+    <ul class="flexcontainer-navbar" data-visible="false">
         <li class="nav-item">
             <a href="/" class="nav-link">
                 <span class="link-text">Home</span>
@@ -38,4 +40,7 @@
             <% } %>
         </li>
     </ul>
+
+    <button id="toggle-nav" menu-openend="false"></button>
 </nav>
+
