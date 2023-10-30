@@ -2,11 +2,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <% if(typeof defaultstyle != 'undefined' && defaultstyle == 'yes') { %>
+    <link rel="stylesheet" href="/nav-footer.css">
     <link rel="stylesheet" href="/style.css">
     <% } %>
     <% if(typeof stylefile != 'undefined' && stylefile != 'no') { %>
     <link rel="stylesheet" href="/<%= stylefile %>Style.css">
     <% } %>
+    <script src="/nav-footer.js" defer></script>
     <% if(typeof jsfile != 'undefined' && jsfile != 'no') { %>
     <script src="/<%= jsfile %>Script.js" defer></script>
     <% } %>
