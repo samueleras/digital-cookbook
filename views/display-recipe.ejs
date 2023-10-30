@@ -6,6 +6,7 @@
 
         <%- include('./partials/nav.ejs') %>
 
+        <main>
                 <!-- ggf mit grid sinnvoll, überschrift bei mobile über dem Bild, bei desktop alles neben dem Bild. -->
 
                     <div class="recipe">
@@ -29,7 +30,7 @@
                             </div>
                         <% } } %>
                         <div class="recipe-info">
-                            <h1><%= recipe.name %></h1>
+                            <h2><%= recipe.name %></h2>
                             <% if( typeof users != 'undefined') { %>
                             <% let username = '"deleted user"'; users.forEach(user => { if(user._id == recipe.created_by){ username = user.username}});%>
                             <p>Created by <%= username %></p>
@@ -62,11 +63,12 @@
                             <p>Preparation Time: <%= recipe.preparation_time %> min</p>
                             <p>Difficulty: <%= recipe.difficulty %></p>
                         </div>
+                        <br>
                         <div class="recipe-content">
                             <p><%= recipe.full_recipe %></p>
                         </div>
                     </div>
-    
+    </main>
     
     <%- include('./partials/footer.ejs') %>
 

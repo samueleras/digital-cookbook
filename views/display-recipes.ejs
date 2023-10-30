@@ -6,11 +6,14 @@
 
         <%- include('./partials/nav.ejs') %>
 
+        <main>
             <h1><%= title %></h1>
 
+            <div class="recipe-container">
             <% if(recipes.length > 0) { %>
                 <% recipes.forEach(recipe => { %>
-                    <a class="recipe" href="/recipe/display/<%= recipe._id %>">
+                    <div class="recipe">
+                    <a href="/recipe/display/<%= recipe._id %>">
                         <div class="recipe-image">
                             <img style="width: 100%; aspect-ratio: 1;" src="<%= recipe.image_link %>" alt="">
                         </div>
@@ -41,11 +44,15 @@
                             <% } %>
                         </div>
                     </a>
+                    </div>
                 <% }); %>
             <% } else {%>
                 <br>
                 <h2>No recipes found...</h2>
             <% } %>
+
+            </div>
+        </main>
     
     
     <%- include('./partials/footer.ejs') %>

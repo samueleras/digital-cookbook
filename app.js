@@ -50,7 +50,7 @@ app.use(jwtAuth);
 app.get('/', (req, res) => {
     Recipe.find().sort({ createdAt: -1 }).then((recipes) => {
         User.find().then((users) => {
-            res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'home', jsfile: 'no', recipes, users, currentUser: req.user ??= undefined });
+            res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'no', recipes, users, currentUser: req.user ??= undefined });
         }).catch((err) => { console.log(err) });
     }).catch((err) => { console.log(err) });
 });
