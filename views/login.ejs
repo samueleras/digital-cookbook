@@ -7,36 +7,37 @@
 
             <main>
 
-                <form id="formlogin" class="form" action=""><!-- Anfang Formular -->
+                <div class="login-signup-container">
+                    <form id="formlogin" class="form" action=""><!-- Anfang Formular -->
 
-                    <h1>Login</h1>
-                    <h2 id="successful" data-visible="false">Successful</h2>
+                        <h1>Login</h1>
+  
+                        <div id="successful" data-visible="false">
+                            <h2 >Successful</h2>
+                        </div>
 
-                    <!-- USERNAME -->
-                    <div class="input-control">
-                        <label for="user">Username</label></td>
-                        <input type="text" id="user" name="user">
-                        <div class="errormessage"></div>
-                    </div>
-                    <!-- PASSWORD -->
-                    <div class="input-control">
-                        <label for="password"> Password </label>
-                        <input type="password" id="password" name="password">
-                        <div class="errormessage"></div>
-                    </div>
+                        <!-- USERNAME -->
+                        <div class="input-control">
+                            <label for="user">Username</label></td>
+                            <input type="text" id="user" name="user">
+                            <div class="errormessage"></div>
+                        </div>
+                        <!-- PASSWORD -->
+                        <div class="input-control">
+                            <label for="password"> Password </label>
+                            <input type="password" id="password" name="password">
+                            <div class="errormessage"></div>
+                        </div>
 
-                    <!-- Formular absenden -->
-                    <button type="submit">Login</button>
+                        <!-- Formular absenden -->
+                        <button type="submit">Login</button>
 
-                </form> <!-- Formular Ende -->
+                    </form> <!-- Formular Ende -->
 
-                <div id="switchcontainer">
                     <a href="/signup" id="switchLoginSignup">Sign Up</a>
                 </div>
 
             </main>
-
-            <%- include('./partials/footer.ejs') %>
 
     </body>
 

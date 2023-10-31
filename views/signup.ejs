@@ -7,44 +7,46 @@
 
             <main>
 
-                <form id="formsignup" class="form" action=""><!-- Anfang Formular -->
+                <div class="login-signup-container">
+                    <form id="formsignup" class="form" action=""><!-- Anfang Formular -->
 
-                    <h1>Sign Up</h1>
-                    <h2 id="successful" data-visible="false">Successful</h2>
+                        <h1>Sign Up</h1>
 
-                    <!-- USERNAME -->
-                    <div class="input-control">
-                        <label for="newuser">Username</label></td>
-                        <input type="text" id="newuser" name="newuser">
-                        <div class="errormessage"></div>
-                    </div>
-                    <!-- PASSWORD -->
-                    <div class="input-control">
-                        <label for="newpassword"> Password </label>
-                        <input type="password" id="newpassword" name="newpassword">
-                        <div class="errormessage"></div>
-                    </div>
+                        <div id="successful" data-visible="false">
+                            <h2>Successful</h2>
+                        </div>
 
-                    <!-- PASSWORD -->
-                    <div class="input-control">
-                        <label for="newpassword2">Confirm Password </label>
-                        <input type="password" id="newpassword2" name="newpassword2">
-                        <div class="errormessage"></div>
-                    </div>
+                        <!-- USERNAME -->
+                        <div class="input-control">
+                            <label for="newuser">Username</label></td>
+                            <input type="text" id="newuser" name="newuser">
+                            <div class="errormessage"></div>
+                        </div>
+                        <!-- PASSWORD -->
+                        <div class="input-control">
+                            <label for="newpassword"> Password </label>
+                            <input type="password" id="newpassword" name="newpassword">
+                            <div class="errormessage"></div>
+                        </div>
 
-                    <!-- Formular absenden -->
-                    <button type="submit">Sign Up</button>
+                        <!-- PASSWORD -->
+                        <div class="input-control">
+                            <label for="newpassword2">Confirm Password </label>
+                            <input type="password" id="newpassword2" name="newpassword2">
+                            <div class="errormessage"></div>
+                        </div>
 
-                </form> <!-- Formular Ende -->
+                        <!-- Formular absenden -->
+                        <button type="submit">Sign Up</button>
+
+                    </form> <!-- Formular Ende -->
 
 
-                <div id="switchcontainer">
                     <a href="/login" id="switchLoginSignup">Login</a>
+
                 </div>
 
             </main>
-
-            <%- include('./partials/footer.ejs') %>
 
     </body>
 

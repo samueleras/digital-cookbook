@@ -72,7 +72,7 @@ app.get('/about', (req, res) => {
 
 // login
 app.get('/login', (req, res) => {
-    res.render('login', { title: 'Login/SignUp', defaultstyle: 'no', stylefile: 'login', jsfile: 'login' });
+    res.render('login', { title: 'Login/SignUp', defaultstyle: 'yes', stylefile: 'login-signup', jsfile: 'login' });
 });
 
 // login action
@@ -109,7 +109,7 @@ app.get('/logout', checkLogin, async (req, res) => {
 
 // signup
 app.get('/signup', (req, res) => {
-    res.render('signup', { title: 'SignUp', defaultstyle: 'no', stylefile: 'signup', jsfile: 'signup', currentUser: req.user ??= undefined });
+    res.render('signup', { title: 'SignUp', defaultstyle: 'yes', stylefile: 'login-signup', jsfile: 'signup', currentUser: req.user ??= undefined });
 });
 
 // signup action
@@ -169,15 +169,14 @@ app.post('/signup-submit', async (req, res) => {
 
 // create a new recipes (only for logged in users)
 app.get('/recipe/create', checkLogin, (req, res) => {
-    console.log("test");
-    res.render('create-or-edit-recipe', { title: 'Create Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined, edit_create: 'Create' });
+    res.render('create-or-edit-recipe', { title: 'Create Recipe', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined, edit_create: 'Create' });
 });
 
 // edit a recipes (only for logged in users)
 app.get('/recipe/edit/:id', checkLogin, async (req, res) => {
     try {
         let recipe = await Recipe.findById(req.params.id);
-        res.render('create-or-edit-recipe', { title: 'Edit Recipe', defaultstyle: 'no', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined, edit_create: 'Edit', recipe });
+        res.render('create-or-edit-recipe', { title: 'Edit Recipe', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined, edit_create: 'Edit', recipe });
     } catch (err) {
         console.log("Failed to edit recipe: " + err);
     }

@@ -1,0 +1,89 @@
+
+main {
+    background-image: linear-gradient(to right, #1f5236, #203a43, #1f5236);
+    margin: 0;
+    /* Centers login-signup-container horizontally und vertically */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.login-signup-container{
+    width: clamp(20rem, 40vw, 25rem);
+}
+
+.form{
+    position: relative;
+    background-color: rgb(228, 228, 228);
+    border-radius: .2rem;
+    padding: 3em;
+}
+
+.form h1{
+    font-weight: 700;
+    margin-bottom: 1.5em;
+}
+
+#successful[data-visible="true"]{
+    position: absolute;
+    top: 7rem;
+    color: #09c372;
+    padding-inline: 3em;
+}
+
+#successful[data-visible="false"]{
+    display: none;
+}
+
+.form .input-control{
+    position: inherit;
+    margin-top: 1.5em;
+    font-weight: 500;
+}
+
+.form .input-control input{
+    width: 100%;
+    border: none;
+    padding: 1em;
+}
+
+.form .input-control input:focus{
+    outline: 0;
+}
+
+.form .input-control.success input{
+    border: 2px solid #09c372;
+}
+
+.form .input-control.error input{
+    border: 2px solid #ff3860;
+}
+
+.form .errormessage{
+    position: absolute;
+    color: #ff3860;
+}
+
+.form button[type="submit"]{
+    background-color: rgb(41, 57, 194);;
+    border: none;
+    border-radius: .2em;
+    width: 100%;
+    margin-top: 3em;
+    margin-inline: auto;
+    padding: 1em;
+    color: whitesmoke;
+    cursor: pointer;
+}
+
+#switchLoginSignup{
+    display: inline-block;
+    margin-top: 0.3em;
+    background-color: rgb(22, 141, 145);;
+    border: none;
+    border-radius: .2em;
+    padding: 1em;
+    color: whitesmoke;
+    text-decoration: none;
+}
