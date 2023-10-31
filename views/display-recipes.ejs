@@ -17,7 +17,18 @@
                         <div class="recipe-image">
                             <img style="width: 100%; aspect-ratio: 1;" src="<%= recipe.image_link %>" alt="">
                         </div>
-                        <% if( typeof currentUser != 'undefined' && recipe.created_by == currentUser.userid) { %>
+                        <div class="recipe-info">
+                            <h2><%= recipe.name %></h2>
+                            <p>Rating: <%= recipe.rating %></p>
+                            <p>Preparation Time: <%= recipe.preparation_time %> min</p>
+                            <p>Difficulty: <%= recipe.difficulty %></p>
+                            <% if( typeof users != 'undefined') { %>
+                            <% let username = '"deleted user"'; users.forEach(user => { if(user._id == recipe.created_by){ username = user.username}});%>
+                            <p>Created by <%= username %></p>
+                            <% } %>
+                        </div>
+                    </a>
+                    <% if( typeof currentUser != 'undefined' && recipe.created_by == currentUser.userid) { %>
                         <div class="edit_delete">
                             <a id="edit" href="/recipe/edit/<%= recipe._id %>">Edit</a>
                             <a id="delte" href="/recipe/delete/<%= recipe._id %>">Delete</a>
@@ -33,17 +44,6 @@
                                 <a id="unsave" href="/recipe/unsave/<%= recipe._id %>">Unsave</a>
                             </div>
                         <% } } %>
-                        <div class="recipe-info">
-                            <h2><%= recipe.name %></h2>
-                            <p>Rating: <%= recipe.rating %></p>
-                            <p>Preparation Time: <%= recipe.preparation_time %> min</p>
-                            <p>Difficulty: <%= recipe.difficulty %></p>
-                            <% if( typeof users != 'undefined') { %>
-                            <% let username = '"deleted user"'; users.forEach(user => { if(user._id == recipe.created_by){ username = user.username}});%>
-                            <p>Created by <%= username %></p>
-                            <% } %>
-                        </div>
-                    </a>
                     </div>
                 <% }); %>
             <% } else {%>
