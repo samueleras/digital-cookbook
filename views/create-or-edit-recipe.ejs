@@ -24,7 +24,8 @@
                         <div class="errormessage"></div>
                     </div>
                     <div class="input-control">
-                        <label for="image">Recipe Picture (optional):</label>
+                        <label>Upload Recipe Picture (optional):</label>
+                        <label for="image" class="no-linebreak"><span id="upload-icon"></span> Upload</label>
                         <input type="file" id="image" name="image">
                         <div class="errormessage"></div>
                     </div>
@@ -36,7 +37,7 @@
                             <option value="medium" <% if(typeof recipe !== "undefined" && recipe.difficulty === "medium"){ %> selected <% } %>>Medium</option>
                             <option value="hard" <% if(typeof recipe !== "undefined" && recipe.difficulty === "hard"){ %> selected <% } %>>Hard</option>
                             <option value="chef" <% if(typeof recipe !== "undefined" && recipe.difficulty === "chef"){ %> selected <% } %>>Chef</option>
-                        </select> <!-- Should be drop down with easy, medium, hard -->
+                        </select>
                         <div class="errormessage"></div>
                     </div>
                     <!-- Estimated time of preparation of the dish -->
@@ -47,7 +48,7 @@
                     </div>
                     <div class="input-control">
                         <label for="recipe">Full Recipe:</label>
-                        <input type="text" id="full_recipe" name="full_recipe" required  value='<%= (typeof recipe === "undefined") ? "" : recipe.full_recipe %>'>
+                        <textarea id="full_recipe" name="full_recipe" required  value='<%= (typeof recipe === "undefined") ? "" : recipe.full_recipe %>'></textarea>
                         <div class="errormessage"></div>
                     </div>
 

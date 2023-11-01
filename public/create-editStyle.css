@@ -1,0 +1,104 @@
+.form{
+    padding: 2em;
+    font-size: 1.7rem;
+    background-color: rgb(228, 228, 228);
+}
+
+.form .input-control{
+    position: inherit;
+    margin-top: 1.5em;
+    font-weight: 500;
+}
+
+.form .input-control input,textarea{
+    width: 100%;
+    border: none;
+    padding: 1em;
+}
+
+.form .input-control input:focus, textarea:focus{
+    outline: 0;
+}
+
+.form .input-control.success input{
+    border: 2px solid #09c372;
+}
+
+.form .input-control.error input{
+    border: 2px solid #ff3860;
+}
+
+.form .errormessage{
+    position: absolute;
+    color: #ff3860;
+}
+
+input[type="file"]{
+    display: none;
+}
+
+label[for="image"]{
+    padding: .5rem;
+    cursor: pointer;
+    border: none;
+    background-color: hsla(0, 0%, 100%, 0.3);
+    backdrop-filter: blur(6px);
+    box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.1);
+    font-size: 1.2rem;
+}
+
+label[for="image"]:hover{
+    background-color: hsla(189, 34%, 52%, 0.3);
+}
+
+#upload-icon{
+    background: url(icons/upload.svg) no-repeat;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-size: 100%;
+    display: inline-block;
+    vertical-align: bottom;
+}
+
+#difficulty{
+    outline: 0;
+    width: 10rem;
+    border: none;
+    background-color: hsla(0, 0%, 100%, 0.3);
+    backdrop-filter: blur(6px);
+    box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.1);
+    padding: 0.5rem;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.form textarea{
+    height: 30rem;
+    resize: none;
+}
+
+.form button[type="submit"]{
+    background-color: rgb(41, 57, 194);;
+    border: none;
+    border-radius: .2em;
+    width: 100%;
+    margin-top: 3em;
+    margin-inline: auto;
+    padding: 1em;
+    color: whitesmoke;
+    cursor: pointer;
+    box-shadow: 5px 5px 5px 1px rgba(0,0,0,0.1);
+}
+
+
+
+@media screen and (min-width: 800px) {
+
+    .form {
+        width: 70vw;
+        margin: 2em auto;
+        border-radius: .5em;
+    }
+
+}
+

@@ -10,6 +10,7 @@
     border-radius: .5em;
     background-color: var(--secondary-background);
     overflow: hidden;
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.1);
 }
 
 .recipe-info{
