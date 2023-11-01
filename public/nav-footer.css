@@ -34,6 +34,7 @@
     padding-inline: 1.5rem;
     height: 3rem;
     align-items: center;
+    font-size: 1.5em;
 }
 
 .flexcontainer-navbar>li>a:hover {
@@ -68,8 +69,7 @@ footer {
 
 
 
-/* On screens that are 992px or more (TABLET/DESKTOP) */
-@media screen and (min-width: 600px) {
+@media screen and (min-width: 1000px) {
 
     /* MQ Navbar */
     .flexcontainer-navbar{
@@ -87,14 +87,5 @@ footer {
     .flexcontainer-navbar>li:last-child{
         margin-left: auto;
     }
-
-}
-
-/* On screens that are 992px or more (DESKTOP) */
-@media screen and (min-width: 992px) {
-
-    /* MQ Navbar */
-
-
 
 }

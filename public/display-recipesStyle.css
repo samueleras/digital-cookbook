@@ -16,6 +16,10 @@
     padding: 1em;
 }
 
+#created-by{
+    margin-right: 2em;
+}
+
 .recipe-info h2{
     margin-top: 0.5em;
 }
@@ -68,7 +72,7 @@
 }
 
 /* On screens that are 1530px or more (DESKTOP) */
-@media screen and (min-width: 1400px) {
+@media screen and (min-width: 1530px) {
 
     .grid-container-recipes{
         grid-template-columns: 1fr 1fr;
