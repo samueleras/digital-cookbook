@@ -7,10 +7,31 @@
         <%- include('./partials/nav.ejs') %>
 
             <main>
-                <h1>Error 404 - Website not found</h1>
-            </main>
+                <div class="error">
+                    <h1>Oops!</h1>
 
-            <%- include('./partials/footer.ejs') %>
+                    <h2>We can't seem to find the page you're looking for.</h2>
+
+                    <p class="error-code">Error code: 404</p>
+                    <br><br>
+                    <p>Visit instead:</p>
+                    <ul class="link-list">
+                        <li>
+                            <a href="/" class="nav-link">
+                                <span class="link-text">All Recipes</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/about" class="nav-link">
+                                <span class="link-text">About</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <img src="/page_images/error.gif" style="width: 100%" alt="">
+
+            </main>
 
     </body>
 

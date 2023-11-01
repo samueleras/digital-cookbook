@@ -315,14 +315,15 @@ app.post('/recipe/rate', checkLogin, async (req, res) => {
 
 // errorpage
 app.use((req, res) => {
-    res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined });
+    res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: '404', jsfile: 'no', currentUser: req.user ??= undefined });
 });
 
 
 //TODO
-//Style 404 maybe with img
 //Style About, little content update
 //Content + Style footer
+//Adjust css for fileupload. Not recognizable wether a file was uploaded or not. frontend js...
+//Upload mov aswell? Is png uploadable?
 //delete, save and create/edit send per frontend js, no page reload!
 //Adjust css and js filenames lowercase
 //List only 20 or 30 recipes per page

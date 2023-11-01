@@ -1,0 +1,37 @@
+main{
+    padding: 2rem;
+}
+
+h1 {
+    font-size: clamp(4rem, 10vw, 8rem);
+    text-align: start;
+}
+
+h2{
+    font-size: clamp(2rem, 6vw, 4rem);
+}
+
+.error-code{
+    font-weight: 500;
+    font-size: 2rem;
+}
+
+.link-list{
+    list-style-type: circle;
+    padding-left: 3rem;
+}
+
+.link-list a{
+    color: blue;
+}
+
+@media screen and (min-width: 800px) {
+
+    main{
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        padding: 5rem;
+        align-items: center;
+    }
+
+}
