@@ -60,7 +60,7 @@ app.get('/recipe/display/:id', (req, res) => {
     const id = req.params.id;
     Recipe.findById(id).then((recipe) => {
         User.find().then((users) => {
-            res.render('display-recipe', { title: 'Recipe', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipe, users, currentUser: req.user ??= undefined });
+            res.render('display-recipe', { title: 'Recipe', defaultstyle: 'yes', stylefile: 'display-recipe', jsfile: 'no', recipe, users, currentUser: req.user ??= undefined });
         }).catch((err) => { console.log(err) });
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });
@@ -320,4 +320,13 @@ app.use((req, res) => {
 
 
 //TODO
-//Delete user button? Maybe account page??
+//Style 404 maybe with img
+//Style About, little content update
+//Content + Style footer
+//delete, save and create/edit send per frontend js, no page reload!
+//Adjust css and js filenames lowercase
+//List only 20 or 30 recipes per page
+//Scale down, compress images
+//Make final Styling
+//Adjust about page, maybe with Images
+//Adjust readme file

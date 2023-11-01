@@ -6,71 +6,104 @@
 
         <%- include('./partials/nav.ejs') %>
 
-        <main>
+            <main>
                 <!-- ggf mit grid sinnvoll, überschrift bei mobile über dem Bild, bei desktop alles neben dem Bild. -->
 
-                    <div class="recipe">
+                <div class="recipe">
+                    <div class="flex-container-recipeheader">
                         <div class="recipe-image">
                             <img style="width: 100%; aspect-ratio: 1;" src="<%= recipe.image_link %>"" alt="">
                         </div>
-                        <% if( typeof currentUser != 'undefined' && recipe.created_by == currentUser.userid) { %>
-                            <div id="edit_delete">
-                                <a id="edit" href="/recipe/edit/<%= recipe._id %>">Edit</a>
-                                <a id="delte" href="/recipe/delete/<%= recipe._id %>">Delete</a>
-                            </div>
-                        <% } %>
-                        <% if( typeof currentUser != 'undefined' && recipe.created_by != currentUser.userid ) { %>
-                            <% if( !currentUser.saved_recipes.includes(recipe._id) ) { %>
-                            <div class="save_container">
-                                <a id="save" href="/recipe/save/<%= recipe._id %>">Save</a>
-                            </div>
-                        <% } else { %>
-                            <div class="save_container">
-                                <a id="unsave" href="/recipe/unsave/<%= recipe._id %>">Unsave</a>
-                            </div>
-                        <% } } %>
-                        <div class="recipe-info">
-                            <h2><%= recipe.name %></h2>
-                            <% if( typeof users != 'undefined') { %>
-                            <% let username = '"deleted user"'; users.forEach(user => { if(user._id == recipe.created_by){ username = user.username}});%>
-                            <p>Created by <%= username %></p>
-                            <% } %>
-                            <p>Rating: <%= recipe.rating %> (<%= recipe.ratings.length %>)</p>
-                            
-                            <% if( typeof currentUser != 'undefined') { %>
-                            <% let currentUsersRating = ""; %>
-                            <% let ratingLabel = "Rate this recipe:"; %>
-                            <% let submit = "Rate:"; %>
-                            <% for( let rating of recipe.ratings){ if(rating.userid.toString() == currentUser.userid.toString()){ currentUsersRating = rating.rating; ratingLabel = "Your Rating:"; submit = "Change Rating"; } } %>
-                            <form id="form-rating" class="form" action="/recipe/rate/" method="POST" enctype="multipart/form-data">
-                                <div class="input-control">
-                                    <label for="rating"><%= ratingLabel %></label>
-                                    <select name="rating" id="rating" size="1">
-                                        <option value=1 <% if(typeof recipe !== "undefined" && currentUsersRating === "1"){ %> selected <% } %>>1 Star</option>
-                                        <option value=2 <% if(typeof recipe !== "undefined" && currentUsersRating === "2"){ %> selected <% } %>>2 Stars</option>
-                                        <option value=3 <% if(typeof recipe !== "undefined" && currentUsersRating === "3"){ %> selected <% } %>>3 Stars</option>
-                                        <option value=4 <% if(typeof recipe !== "undefined" && currentUsersRating === "4"){ %> selected <% } %>>4 Stars</option>
-                                        <option value=5 <% if(typeof recipe !== "undefined" && currentUsersRating === "5"){ %> selected <% } %>>5 Stars</option>
-                                    </select>
-                                    <!-- recipeid -->
-                                    <div style="display: none" class="input-control">
-                                        <input type="text" id="id" name="id" value='<%= recipe._id %>'>
-                                    </div>
-                                    <button type="submit"><%= submit %></button>
-                            </form>
-                            <% } %>
+                        <div class=" recipe-info">
+                            <h2>
+                                <%= recipe.name %>
+                            </h2>
+                            <% if( typeof users !='undefined' ) { %>
 
-                            <p>Preparation Time: <%= recipe.preparation_time %> min</p>
-                            <p>Difficulty: <%= recipe.difficulty %></p>
-                        </div>
-                        <br>
-                        <div class="recipe-content">
-                            <p><%= recipe.full_recipe %></p>
+                                <p>Rating: <%= recipe.rating %> (<%= recipe.ratings.length %>)</p>
+
+                                <% if( typeof currentUser !='undefined' ) { %>
+                                    <% let currentUsersRating="" ; %>
+                                        <% let ratingLabel="Rate this recipe:" ; %>
+                                            <% let submit="Rate" ; %>
+                                                <% for( let rating of recipe.ratings){
+                                                    if(rating.userid.toString()==currentUser.userid.toString()){
+                                                    currentUsersRating=rating.rating; ratingLabel="Your Rating:" ;
+                                                    submit="Change Rating" ; } } %>
+                                                    <form id="form-rating" class="form" action="/recipe/rate/"
+                                                        method="POST" enctype="multipart/form-data">
+                                                        <label for="rating">
+                                                            <%= ratingLabel %>
+                                                        </label>
+                                                        <br>
+                                                        <select name="rating" id="rating" size="1">
+                                                            <option value=1 <% if(typeof recipe !=="undefined" &&
+                                                                currentUsersRating==="1" ){ %> selected <% } %>>1
+                                                                    Star</option>
+                                                            <option value=2 <% if(typeof recipe !=="undefined" &&
+                                                                currentUsersRating==="2" ){ %> selected <% } %>>2
+                                                                    Stars</option>
+                                                            <option value=3 <% if(typeof recipe !=="undefined" &&
+                                                                currentUsersRating==="3" ){ %> selected <% } %>>3
+                                                                    Stars</option>
+                                                            <option value=4 <% if(typeof recipe !=="undefined" &&
+                                                                currentUsersRating==="4" ){ %> selected <% } %>>4
+                                                                    Stars</option>
+                                                            <option value=5 <% if(typeof recipe !=="undefined" &&
+                                                                currentUsersRating==="5" ){ %> selected <% } %>>5
+                                                                    Stars</option>
+                                                        </select>
+                                                        <!-- recipeid -->
+                                                        <div style="display: none" class="input-control">
+                                                            <input type="text" id="id" name="id"
+                                                                value='<%= recipe._id %>'>
+                                                        </div>
+                                                        <button type="submit">
+                                                            <%= submit %>
+                                                        </button>
+                                                    </form>
+                                                    <% } %>
+
+                                                        <p>Preparation Time: <span class="no-linebreak"><%= recipe.preparation_time %> min</span></p>
+                                                        <p>Difficulty: <%= recipe.difficulty %>
+                                                        </p>
+                                                        <% let username='"deleted user"' ; users.forEach(user=> {
+                                                            if(user._id == recipe.created_by){ username =
+                                                            user.username}});%>
+                                                            <p>Created by <span class="no-linebreak"><%= username %></span>
+                                                            </p>
+                                                            <% } %>
+
+
                         </div>
                     </div>
-    </main>
-    
-    <%- include('./partials/footer.ejs') %>
+                    <br>
+                    <div class="recipe-content">
+                        <p>
+                            <%= recipe.full_recipe %>
+                        </p>
+                    </div>
 
-</body>
-</html> 
+                    <% if( typeof currentUser !='undefined' && recipe.created_by==currentUser.userid ) { %>
+                        <div class="recipe-actions">
+                            <a id="edit" href="/recipe/edit/<%= recipe._id %>"></a>
+                            <a id="delete" href="/recipe/delete/<%= recipe._id %>"></a>
+                        </div>
+                        <% } %>
+                            <% if( typeof currentUser !='undefined' && recipe.created_by !=currentUser.userid ) { %>
+                                <div class="recipe-actions">
+                                    <% if( !currentUser.saved_recipes.includes(recipe._id) ) { %>
+                                        <a id="save" href="/recipe/save/<%= recipe._id %>"></a>
+                                        <% } else { %>
+                                            <a id="unsave" href="/recipe/unsave/<%= recipe._id %>"></a>
+                                            <% } %>
+                                </div>
+                                <% } %>
+                </div>
+            </main>
+
+            <%- include('./partials/footer.ejs') %>
+
+    </body>
+
+</html>
