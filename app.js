@@ -237,7 +237,7 @@ app.post('/create-edit-submit', checkLogin, async (req, res) => {
 // list own recipes (only for logged in users)
 app.get('/my-recipes', checkLogin, (req, res) => {
     Recipe.find({ created_by: req.user.userid }).then((recipes) => {
-        res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipes, currentUser: req.user ??= undefined });
+        res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'no', recipes, currentUser: req.user ??= undefined });
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });
 
@@ -284,7 +284,7 @@ app.get('/recipe/unsave/:id', checkLogin, async (req, res) => {
 app.get('/saved-recipes', checkLogin, (req, res) => {
     Recipe.find({ '_id': { $in: req.user.saved_recipes } }).then((recipes) => {
         User.find().then((users) => {
-            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', recipes, users, currentUser: req.user ??= undefined });
+            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'no', recipes, users, currentUser: req.user ??= undefined });
         }).catch((err) => { console.log(err) });
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });

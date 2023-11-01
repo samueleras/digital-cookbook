@@ -1,27 +1,76 @@
-.recipe-container{
+.grid-container-recipes{
     display: grid;
-    gap: .5em;
+    gap: .7em;
     margin: 1em;
 }
 
-.recipe {
+.recipe{
+    position: relative;
     border: 1px solid var(--border);
     border-radius: .5em;
-    padding: 1em;
     background-color: var(--secondary-background);
     overflow: hidden;
 }
 
-
-/* On screens that are 992px or more (TABLET/DESKTOP) */
-@media screen and (min-width: 600px) {
-
+.recipe-info{
+    padding: 1em;
 }
 
-/* On screens that are 992px or more (DESKTOP) */
-@media screen and (min-width: 992px) {
+.recipe-info h2{
+    margin-top: 0.5em;
+}
 
-    .recipe-container{
+.recipe-actions{
+    position: absolute;
+    bottom: 1em;
+    right: 1em;
+}
+
+.recipe-actions a {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-size: 100%;
+}
+
+#edit{
+    background: url(icons/edit.svg) no-repeat;
+}
+
+#delete{
+    background: url(icons/delete.svg) no-repeat;
+}
+
+#save{
+    background: url(icons/like.svg) no-repeat;
+}
+
+#unsave{
+    background: url(icons/unlike.svg) no-repeat;
+}
+
+
+/* On screens that are 800px or more (TABLET/DESKTOP) */
+@media screen and (min-width: 800px) {
+
+    .flex-container-recipe {
+        display: flex;
+    }
+
+    .recipe-image{
+        flex-basis: 40%;
+    }
+
+    .recipe-info{
+/*         flex-basis: 60rem; */
+        margin-left: 2em;
+    }
+}
+
+/* On screens that are 1530px or more (DESKTOP) */
+@media screen and (min-width: 1400px) {
+
+    .grid-container-recipes{
         grid-template-columns: 1fr 1fr;
     }
 

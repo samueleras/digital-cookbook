@@ -6,56 +6,68 @@
 
         <%- include('./partials/nav.ejs') %>
 
-        <main>
-            <h1><%= title %></h1>
+            <main>
+                <h1>
+                    <%= title %>
+                </h1>
 
-            <div class="recipe-container">
-            <% if(recipes.length > 0) { %>
-                <% recipes.forEach(recipe => { %>
-                    <div class="recipe">
-                    <a href="/recipe/display/<%= recipe._id %>">
-                        <div class="recipe-image">
-                            <img style="width: 100%; aspect-ratio: 1;" src="<%= recipe.image_link %>" alt="">
-                        </div>
-                        <div class="recipe-info">
-                            <h2><%= recipe.name %></h2>
-                            <p>Rating: <%= recipe.rating %></p>
-                            <p>Preparation Time: <%= recipe.preparation_time %> min</p>
-                            <p>Difficulty: <%= recipe.difficulty %></p>
-                            <% if( typeof users != 'undefined') { %>
-                            <% let username = '"deleted user"'; users.forEach(user => { if(user._id == recipe.created_by){ username = user.username}});%>
-                            <p>Created by <%= username %></p>
-                            <% } %>
-                        </div>
-                    </a>
-                    <% if( typeof currentUser != 'undefined' && recipe.created_by == currentUser.userid) { %>
-                        <div class="edit_delete">
-                            <a id="edit" href="/recipe/edit/<%= recipe._id %>">Edit</a>
-                            <a id="delte" href="/recipe/delete/<%= recipe._id %>">Delete</a>
-                        </div>
-                        <% } %>
-                        <% if( typeof currentUser != 'undefined' && recipe.created_by != currentUser.userid ) { %>
-                            <% if( !currentUser.saved_recipes.includes(recipe._id) ) { %>
-                            <div class="save_container">
-                                <a id="save" href="/recipe/save/<%= recipe._id %>">Save</a>
+                <div class="grid-container-recipes">
+                    <% if(recipes.length> 0) { %>
+                        <% recipes.forEach(recipe=> { %>
+                            <div class="recipe">
+                                <a class="flex-container-recipe" href="/recipe/display/<%= recipe._id %>">
+                                    <div class="recipe-image">
+                                        <img style="width: 100%; aspect-ratio: 1;" src="<%= recipe.image_link %>"
+                                            alt="">
+                                    </div>
+                                    <div class="recipe-info">
+                                        <h2>
+                                            <%= recipe.name %>
+                                        </h2>
+                                        <p>Rating: <%= recipe.rating %>
+                                        </p>
+                                        <p>Preparation Time: <span class="no-linebreak">
+                                                <%= recipe.preparation_time %> min
+                                            </span></p>
+                                        <p>Difficulty: <%= recipe.difficulty %>
+                                        </p>
+                                        <% if( typeof users !='undefined' ) { %>
+                                            <% let username='"deleted user"' ; users.forEach(user=> { if(user._id ==
+                                                recipe.created_by){ username = user.username}});%>
+                                                <p>Created by <%= username %>
+                                                </p>
+                                                <% } %>
+                                    </div>
+                                </a>
+                                <% if( typeof currentUser !='undefined' && recipe.created_by==currentUser.userid ) { %>
+                                    <div class="recipe-actions">
+                                        <a id="edit" href="/recipe/edit/<%= recipe._id %>"></a>
+                                        <a id="delete" href="/recipe/delete/<%= recipe._id %>"></a>
+                                    </div>
+                                    <% } %>
+                                        <% if( typeof currentUser !='undefined' && recipe.created_by
+                                            !=currentUser.userid ) { %>
+                                            <div class="recipe-actions">
+                                                <% if( !currentUser.saved_recipes.includes(recipe._id) ) { %>
+                                                    <a id="save" href="/recipe/save/<%= recipe._id %>"></a>
+                                                    <% } else { %>
+                                                        <a id="unsave" href="/recipe/unsave/<%= recipe._id %>"></a>
+                                                        <% } %>
+                                            </div>
+                                            <% } %>
                             </div>
-                        <% } else { %>
-                            <div class="save_container">
-                                <a id="unsave" href="/recipe/unsave/<%= recipe._id %>">Unsave</a>
-                            </div>
-                        <% } } %>
-                    </div>
-                <% }); %>
-            <% } else {%>
-                <br>
-                <h2>No recipes found...</h2>
-            <% } %>
+                            <% }); %>
+                </div>
+                <% } else {%>
+                    <br>
+                    <h2>No recipes found...</h2>
+                    <% } %>
 
-            </div>
-        </main>
-    
-    
-    <%- include('./partials/footer.ejs') %>
+            </main>
 
-</body>
-</html> 
+
+            <%- include('./partials/footer.ejs') %>
+
+    </body>
+
+</html>
