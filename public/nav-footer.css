@@ -28,7 +28,7 @@
     transform: translateX(0%);
 }
 
-.flexcontainer-navbar>li>a {
+.link-text {
     text-decoration: none;
     display: flex;
     padding-inline: 1.5rem;
@@ -37,7 +37,7 @@
     font-size: 1.5em;
 }
 
-.flexcontainer-navbar>li>a:hover {
+.link-text:hover {
     background-color: rgb(162, 189, 212);
 }
 
