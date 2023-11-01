@@ -67,7 +67,7 @@ app.get('/recipe/display/:id', (req, res) => {
 
 // informatin of how the site works
 app.get('/about', (req, res) => {
-    res.render('about', { title: 'About', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined });
+    res.render('about', { title: 'About', defaultstyle: 'yes', stylefile: 'about', jsfile: 'no', currentUser: req.user ??= undefined });
 });
 
 // login

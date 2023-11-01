@@ -1,19 +1,19 @@
 .form{
-    padding: 2em;
+    padding: 2rem;
     font-size: 1.7rem;
     background-color: rgb(228, 228, 228);
 }
 
 .form .input-control{
     position: inherit;
-    margin-top: 1.5em;
+    margin-top: 1.5rem;
     font-weight: 500;
 }
 
 .form .input-control input,textarea{
     width: 100%;
     border: none;
-    padding: 1em;
+    padding: 1rem;
 }
 
 .form .input-control input:focus, textarea:focus{
@@ -80,11 +80,11 @@ label[for="image"]:hover{
 .form button[type="submit"]{
     background-color: rgb(41, 57, 194);;
     border: none;
-    border-radius: .2em;
+    border-radius: .2rem;
     width: 100%;
-    margin-top: 3em;
+    margin-top: 3rem;
     margin-inline: auto;
-    padding: 1em;
+    padding: 1rem;
     color: whitesmoke;
     cursor: pointer;
     box-shadow: 5px 5px 5px 1px rgba(0,0,0,0.1);
@@ -96,8 +96,8 @@ label[for="image"]:hover{
 
     .form {
         width: 70vw;
-        margin: 2em auto;
-        border-radius: .5em;
+        margin: 2rem auto;
+        border-radius: .5rem;
     }
 
 }

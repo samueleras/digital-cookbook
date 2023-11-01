@@ -17,19 +17,19 @@ main {
     position: relative;
     background-color: rgb(228, 228, 228);
     border-radius: .2rem;
-    padding: 3em;
+    padding: 3rem;
 }
 
 .form h1{
     font-weight: 700;
-    margin-bottom: 1.5em;
+    margin-bottom: 1.5rem;
 }
 
 #successful[data-visible="true"]{
     position: absolute;
     top: 7rem;
     color: #09c372;
-    padding-inline: 3em;
+    padding-inline: 3rem;
 }
 
 #successful[data-visible="false"]{
@@ -38,14 +38,14 @@ main {
 
 .form .input-control{
     position: inherit;
-    margin-top: 1.5em;
+    margin-top: 1.5rem;
     font-weight: 500;
 }
 
 .form .input-control input{
     width: 100%;
     border: none;
-    padding: 1em;
+    padding: 1rem;
 }
 
 .form .input-control input:focus{
@@ -68,22 +68,22 @@ main {
 .form button[type="submit"]{
     background-color: rgb(41, 57, 194);;
     border: none;
-    border-radius: .2em;
+    border-radius: .2rem;
     width: 100%;
-    margin-top: 3em;
+    margin-top: 3rem;
     margin-inline: auto;
-    padding: 1em;
+    padding: 1rem;
     color: whitesmoke;
     cursor: pointer;
 }
 
 #switchLoginSignup{
     display: inline-block;
-    margin-top: 0.3em;
+    margin-top: 0.3rem;
     background-color: rgb(22, 141, 145);;
     border: none;
-    border-radius: .2em;
-    padding: 1em;
+    border-radius: .2rem;
+    padding: 1rem;
     color: whitesmoke;
     text-decoration: none;
 }
