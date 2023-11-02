@@ -250,8 +250,7 @@ app.post('/create-edit-submit', checkLogin, async (req, res) => {
 
 // my-recipes without params
 app.get('/my-recipes', (req, res) => {
-    const sorting = { "createdAt": -1 };
-    const paramsobj = {"page": 1, sorting };
+    const sorting = {"page": 1, sorting: { "createdAt": -1 } };
     const params = JSON.stringify(paramsobj);
     res.redirect(`/my-recipes/${params}`);
 });
@@ -260,7 +259,7 @@ app.get('/my-recipes/:params', checkLogin, (req, res) => {
     const params = JSON.parse(req.params.params);
     const page = params.page;
     const sorting = params.sorting;
-    Recipe.find({ created_by: req.user.userid }).then((recipes) => {
+    Recipe.find({ created_by: req.user.userid /* hier zusätzliches suchkriterium mit abfrage ob params.search undefined sonst * auswählen */}).then((recipes) => {
         res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'no', recipes, currentUser: req.user ??= undefined, page: page, sorting });
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });
