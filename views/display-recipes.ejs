@@ -12,15 +12,17 @@
                 </h1>
                 <div class="sort-search-bar">
                     <div class="sort">
-                        <form id="form-sort" class="form" action="">
-                            <select name="sort" id="sort-dropdown" size="1" onchange="this.form.submit()">
+                        <form id="form-sort" class="form">
+                            <select name="sort" id="sort-dropdown" size="1" onchange="sortRecipes()">
                                 <option value="cDesc" <% if( typeof sorting.createdAt != 'undefined' && sorting.createdAt==-1 ){ %> selected <% } %>>Sort
                                         by Creation Date (Desc)</option>
-                                <option value="cAsc">Sort by Creation Date (Asc)</option>
-                                <option value="rDesc">Sort by Rating (Desc)</option>
-                                <option value="rAsc">Sort by Rating (Asc)</option>
-                                <option value="pDesc">Sort by Popularity (Desc)</option>
+                                <option value="cAsc" <% if( typeof sorting.createdAt != 'undefined' && sorting.createdAt==1 ){ %> selected <% } %>>Sort by Creation Date (Asc)</option>
+                                <option value="rDesc" <% if( typeof sorting.rating != 'undefined' && sorting.rating==-1 ){ %> selected <% } %>>Sort by Rating (Desc)</option>
+                                <option value="rAsc" <% if( typeof sorting.rating != 'undefined' && sorting.rating==1 ){ %> selected <% } %>>Sort by Rating (Asc)</option>
+                                <option value="nDesc" <% if( typeof sorting.name != 'undefined' && sorting.name==-1 ){ %> selected <% } %>>Sort by Name (Desc)</option>
+                                <option value="nAsc" <% if( typeof sorting.name != 'undefined' && sorting.name==1 ){ %> selected <% } %>>Sort by Name (Asc)</option>
                             </select>
+                            <button style="display: none" type="submit" ref="submit"></button>
                         </form>
                     </div>
                     <div class="search">

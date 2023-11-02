@@ -62,7 +62,7 @@ app.get('/all-recipes/:params', (req, res) => {
     const sorting = params.sorting;
     Recipe.find().sort(sorting).then((recipes) => {
         User.find().then((users) => {
-            res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'no', recipes, users, currentUser: req.user ??= undefined, page: page, sorting });
+            res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, users, currentUser: req.user ??= undefined, page: page, sorting });
         }).catch((err) => { console.log(err) });
     }).catch((err) => { console.log(err) });
 });
@@ -256,8 +256,8 @@ app.get('/my-recipes/:params', checkLogin, (req, res) => {
     const params = JSON.parse(req.params.params);
     const page = params.page;
     const sorting = params.sorting;
-    Recipe.find({ created_by: req.user.userid /* hier zusätzliches suchkriterium mit abfrage ob params.search undefined sonst * auswählen */}).then((recipes) => {
-        res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'no', recipes, currentUser: req.user ??= undefined, page: page, sorting });
+    Recipe.find({ created_by: req.user.userid /* hier zusätzliches suchkriterium mit abfrage ob params.search undefined sonst * auswählen */}).sort(sorting).then((recipes) => {
+        res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, currentUser: req.user ??= undefined, page: page, sorting });
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });
 
@@ -300,7 +300,6 @@ app.get('/recipe/unsave/:id', checkLogin, async (req, res) => {
 
 });
 
-
 // Saved-recipes recipes without params
 app.get('/saved-recipes', (req, res) => {
     const sorting = {"page": 1, sorting: { "createdAt": -1 } };
@@ -311,9 +310,9 @@ app.get('/saved-recipes/:params', checkLogin, (req, res) => {
     const params = JSON.parse(req.params.params);
     const page = params.page;
     const sorting = params.sorting;
-    Recipe.find({ '_id': { $in: req.user.saved_recipes } }).then((recipes) => {
+    Recipe.find({ '_id': { $in: req.user.saved_recipes } }).sort(sorting).then((recipes) => {
         User.find().then((users) => {
-            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'no', recipes, users, currentUser: req.user ??= undefined, page: page, sorting });
+            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, users, currentUser: req.user ??= undefined, page: page, sorting });
         }).catch((err) => { console.log(err) });
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });
