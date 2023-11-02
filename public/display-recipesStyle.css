@@ -54,6 +54,24 @@
     background: url(icons/unlike.svg) no-repeat;
 }
 
+.page-selector{
+    display: flex;
+    width: 100%;
+    margin: 2rem 0;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.page-selector a{
+    font-size: 2rem;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+#active-page{
+    text-decoration: underline;
+    color: rgb(23, 146, 64);
+}
+
 
 /* On screens that are 800px or more (TABLET/DESKTOP) */
 @media screen and (min-width: 800px) {

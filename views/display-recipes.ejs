@@ -12,52 +12,68 @@
                 </h1>
 
                 <div class="grid-container-recipes">
-                    <% if(recipes.length> 0) { %>
-                        <% recipes.forEach(recipe=> { %>
-                            <div class="recipe">
-                                <a class="flex-container-recipe" href="/recipe/display/<%= recipe._id %>">
-                                    <div class="recipe-image">
-                                        <img style="width: 100%; aspect-ratio: 1;" src="<%= recipe.image_link %>"
-                                            alt="">
-                                    </div>
-                                    <div class="recipe-info">
-                                        <h2>
-                                            <%= recipe.name %>
-                                        </h2>
-                                        <p>Rating: <%= recipe.rating %>
-                                        </p>
-                                        <p>Preparation Time: <span class="no-linebreak">
-                                                <%= recipe.preparation_time %> min
-                                            </span></p>
-                                        <p>Difficulty: <%= recipe.difficulty %>
-                                        </p>
-                                        <% if( typeof users !='undefined' ) { %>
-                                            <% let username='"deleted user"' ; users.forEach(user=> { if(user._id ==
-                                                recipe.created_by){ username = user.username}});%>
-                                                <p id="created-by">Created by <%= username %>
+                    <% let elements_per_page=2; let endindex=page * elements_per_page; let startindex=endindex -
+                        elements_per_page; if(recipes.length < endindex){ endindex=recipes.length } %>
+                        <% if(recipes.length> 0) { %>
+                            <% for(let i=startindex; i < endindex; i++) { %>
+                                <div class="recipe">
+                                        <a class="flex-container-recipe" href="/recipe/display/<%= recipes[i]._id %>">
+                                            <div class="recipe-image">
+                                                <img style="width: 100%; aspect-ratio: 1;"
+                                                    src="<%= recipes[i].image_link %>" alt="">
+                                            </div>
+                                            <div class="recipe-info">
+                                                <h2>
+                                                    <%= recipes[i].name %>
+                                                </h2>
+                                                <p>Rating: <%= recipes[i].rating %>
                                                 </p>
-                                                <% } %>
-                                    </div>
-                                </a>
-                                <% if( typeof currentUser !='undefined' && recipe.created_by==currentUser.userid ) { %>
-                                    <div class="recipe-actions">
-                                        <a id="edit" href="/recipe/edit/<%= recipe._id %>"></a>
-                                        <a id="delete" href="/recipe/delete/<%= recipe._id %>"></a>
-                                    </div>
-                                    <% } %>
-                                        <% if( typeof currentUser !='undefined' && recipe.created_by
-                                            !=currentUser.userid ) { %>
-                                            <div class="recipe-actions">
-                                                <% if( !currentUser.saved_recipes.includes(recipe._id) ) { %>
-                                                    <a id="save" href="/recipe/save/<%= recipe._id %>"></a>
-                                                    <% } else { %>
-                                                        <a id="unsave" href="/recipe/unsave/<%= recipe._id %>"></a>
+                                                <p>Preparation Time: <span class="no-linebreak">
+                                                        <%= recipes[i].preparation_time %> min
+                                                    </span></p>
+                                                <p>Difficulty: <%= recipes[i].difficulty %>
+                                                </p>
+                                                <% if( typeof users !='undefined' ) { %>
+                                                    <% let username='"deleted user"' ; users.forEach(user=> {
+                                                        if(user._id ==
+                                                        recipes[i].created_by){ username = user.username}});%>
+                                                        <p id="created-by">Created by <%= username %>
+                                                        </p>
                                                         <% } %>
                                             </div>
+                                        </a>
+                                        <% if( typeof currentUser !='undefined' &&
+                                            recipes[i].created_by==currentUser.userid ) { %>
+                                            <div class="recipe-actions">
+                                                <a id="edit" href="/recipe/edit/<%= recipes[i]._id %>"></a>
+                                                <a id="delete" href="/recipe/delete/<%= recipes[i]._id %>"></a>
+                                            </div>
                                             <% } %>
-                            </div>
-                            <% }); %>
+                                                <% if( typeof currentUser !='undefined' && recipes[i].created_by
+                                                    !=currentUser.userid ) { %>
+                                                    <div class="recipe-actions">
+                                                        <% if( !currentUser.saved_recipes.includes(recipes[i]._id) ) {
+                                                            %>
+                                                            <a id="save" href="/recipe/save/<%= recipes[i]._id %>"></a>
+                                                            <% } else { %>
+                                                                <a id="unsave"
+                                                                    href="/recipe/unsave/<%= recipes[i]._id %>"></a>
+                                                                <% } %>
+                                                    </div>
+                                                    <% } %>
+                                </div>
+                                <% } %>
                 </div>
+
+                <div class="page-selector">
+                    <% endindex=Math.floor(recipes.length / elements_per_page); if(recipes.length
+                        % elements_per_page !=0){ endindex+=1 };%>
+                        <% for(let i=1; i <= endindex; i++) { %>
+                            <% let params={ "page": i, sorting}; %>
+                                <a <% if(i == page){ %>id="active-page"<% } %> href="./<%= JSON.stringify(params) %>"><%= i %></a>
+                                <% } %>
+                </div>
+
                 <% } else {%>
                     <br>
                     <h2>No recipes found...</h2>

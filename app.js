@@ -46,11 +46,25 @@ app.use(fileUpload());
 // Check for userlogin
 app.use(jwtAuth);
 
-// home page for everyone to see, with everyones recipes
+// root redirect
 app.get('/', (req, res) => {
-    Recipe.find().sort({ createdAt: -1 }).then((recipes) => {
+    res.redirect("/all-recipes");
+});
+// All recipes without params
+app.get('/all-recipes', (req, res) => {
+    const sorting = { "createdAt": -1 };
+    const paramsobj = {"page": 1, sorting };
+    const params = JSON.stringify(paramsobj);
+    res.redirect(`/all-recipes/${params}`);
+});
+// All recipes with parameters for sorting and subpage
+app.get('/all-recipes/:params', (req, res) => {
+    const params = JSON.parse(req.params.params);
+    const page = params.page;
+    const sorting = params.sorting;
+    Recipe.find().sort(sorting).then((recipes) => {
         User.find().then((users) => {
-            res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'no', recipes, users, currentUser: req.user ??= undefined });
+            res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'no', recipes, users, currentUser: req.user ??= undefined, page: page, sorting });
         }).catch((err) => { console.log(err) });
     }).catch((err) => { console.log(err) });
 });
@@ -234,10 +248,20 @@ app.post('/create-edit-submit', checkLogin, async (req, res) => {
     }).catch((err) => console.log(err));
 });
 
+// my-recipes without params
+app.get('/my-recipes', (req, res) => {
+    const sorting = { "createdAt": -1 };
+    const paramsobj = {"page": 1, sorting };
+    const params = JSON.stringify(paramsobj);
+    res.redirect(`/my-recipes/${params}`);
+});
 // list own recipes (only for logged in users)
-app.get('/my-recipes', checkLogin, (req, res) => {
+app.get('/my-recipes/:params', checkLogin, (req, res) => {
+    const params = JSON.parse(req.params.params);
+    const page = params.page;
+    const sorting = params.sorting;
     Recipe.find({ created_by: req.user.userid }).then((recipes) => {
-        res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'no', recipes, currentUser: req.user ??= undefined });
+        res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'no', recipes, currentUser: req.user ??= undefined, page: page, sorting });
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });
 
@@ -280,11 +304,22 @@ app.get('/recipe/unsave/:id', checkLogin, async (req, res) => {
 
 });
 
+
+// Saved-recipes recipes without params
+app.get('/saved-recipes', (req, res) => {
+    const sorting = { "createdAt": -1 };
+    const paramsobj = {"page": 1, sorting };
+    const params = JSON.stringify(paramsobj);
+    res.redirect(`/saved-recipes/${params}`);
+});
 // list recipes of other people that you saved/liked
-app.get('/saved-recipes', checkLogin, (req, res) => {
+app.get('/saved-recipes/:params', checkLogin, (req, res) => {
+    const params = JSON.parse(req.params.params);
+    const page = params.page;
+    const sorting = params.sorting;
     Recipe.find({ '_id': { $in: req.user.saved_recipes } }).then((recipes) => {
         User.find().then((users) => {
-            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'no', recipes, users, currentUser: req.user ??= undefined });
+            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'no', recipes, users, currentUser: req.user ??= undefined, page: page, sorting });
         }).catch((err) => { console.log(err) });
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });
