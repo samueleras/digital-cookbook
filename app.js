@@ -67,6 +67,20 @@ app.get('/all-recipes/:params', (req, res) => {
     }).catch((err) => { console.log(err) });
 });
 
+
+// Search for recipe
+app.get('/search/:params', (req, res) => {
+    const params = JSON.parse(req.params.params);
+    const page = params.page;
+    const sorting = params.sorting;
+    const searchparam = params.searchparam;
+    Recipe.find({ name: { $regex: '.*' + searchparam + '.*' } }).sort(sorting).then((recipes) => {
+        User.find().then((users) => {
+            res.render('display-recipes', { title: 'Search Result', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, users, currentUser: req.user ??= undefined, page: page, sorting });
+        }).catch((err) => { console.log(err) });
+    }).catch((err) => { console.log(err) });
+});
+
 // display recipe by id
 app.get('/recipe/display/:id', (req, res) => {
     const id = req.params.id;

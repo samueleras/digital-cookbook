@@ -1,9 +1,8 @@
 //SORT
 
-const sortform = document.querySelector('#form-sort');
 const sort_dropdown = document.querySelector('#sort-dropdown');
 
-const sortRecipes = async () => {
+const sortRecipes = () => {
 
     const sort_mode = sort_dropdown.value;
 
@@ -38,3 +37,15 @@ const sortRecipes = async () => {
 
 //SEARCH
 const searchform = document.querySelector('#form-search');
+const searchparam = document.querySelector('#search-input');
+
+searchform.addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+    
+    let searchparamValue = searchparam.value;
+
+    const sorting = { "page": 1, sorting: { "createdAt": -1 }, searchparam: searchparamValue };
+    location.href = `/search/${JSON.stringify(sorting)}`;
+
+});
