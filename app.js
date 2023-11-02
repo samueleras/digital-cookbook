@@ -52,10 +52,8 @@ app.get('/', (req, res) => {
 });
 // All recipes without params
 app.get('/all-recipes', (req, res) => {
-    const sorting = { "createdAt": -1 };
-    const paramsobj = {"page": 1, sorting };
-    const params = JSON.stringify(paramsobj);
-    res.redirect(`/all-recipes/${params}`);
+    const sorting = {"page": 1, sorting: { "createdAt": -1 } };
+    res.redirect(`/all-recipes/${JSON.stringify(sorting)}`);
 });
 // All recipes with parameters for sorting and subpage
 app.get('/all-recipes/:params', (req, res) => {
@@ -251,8 +249,7 @@ app.post('/create-edit-submit', checkLogin, async (req, res) => {
 // my-recipes without params
 app.get('/my-recipes', (req, res) => {
     const sorting = {"page": 1, sorting: { "createdAt": -1 } };
-    const params = JSON.stringify(paramsobj);
-    res.redirect(`/my-recipes/${params}`);
+    res.redirect(`/my-recipes/${JSON.stringify(sorting)}`);
 });
 // list own recipes (only for logged in users)
 app.get('/my-recipes/:params', checkLogin, (req, res) => {
@@ -306,10 +303,8 @@ app.get('/recipe/unsave/:id', checkLogin, async (req, res) => {
 
 // Saved-recipes recipes without params
 app.get('/saved-recipes', (req, res) => {
-    const sorting = { "createdAt": -1 };
-    const paramsobj = {"page": 1, sorting };
-    const params = JSON.stringify(paramsobj);
-    res.redirect(`/saved-recipes/${params}`);
+    const sorting = {"page": 1, sorting: { "createdAt": -1 } };
+    res.redirect(`/saved-recipes/${JSON.stringify(sorting)}`);
 });
 // list recipes of other people that you saved/liked
 app.get('/saved-recipes/:params', checkLogin, (req, res) => {
@@ -354,6 +349,7 @@ app.use((req, res) => {
 
 
 //TODO
+//Adjust login successful text
 //Style About, little content update
 //Content + Style footer
 //Adjust css for fileupload. Not recognizable wether a file was uploaded or not. frontend js...

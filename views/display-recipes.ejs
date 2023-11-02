@@ -13,7 +13,6 @@
                 <div class="sort-search-bar">
                     <div class="sort">
                         <form id="form-sort" class="form" action="">
-                            <label for="sort">Sorting</label>
                             <select name="sort" id="sort-dropdown" size="1" onchange="this.form.submit()">
                                 <option value="cDesc" <% if( typeof sorting.createdAt != 'undefined' && sorting.createdAt==-1 ){ %> selected <% } %>>Sort
                                         by Creation Date (Desc)</option>
@@ -26,10 +25,8 @@
                     </div>
                     <div class="search">
                         <form id="form-search" class="form" action="">
-                            <input type="text" id="saerch" name="saerch">
-                            <button type="submit">
-                                SearchIcon
-                            </button>
+                            <input type="text" id="search-input" name="search" placeholder="Search for Recipe Name">
+                            <input type="submit" hidden />
                         </form>
                     </div>
                 </div>
