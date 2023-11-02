@@ -27,7 +27,7 @@
                     </div>
                     <div class="search">
                         <form id="form-search" class="form">
-                            <input type="text" id="search-input" name="search" placeholder="Search for Recipe Name">
+                            <input type="text" id="search-input" name="search" placeholder="Search for Recipe Name" value="<%= searchparam %>">
                             <input type="submit" hidden />
                         </form>
                     </div>
@@ -90,7 +90,7 @@
                     <% endindex=Math.floor(recipes.length / elements_per_page); if(recipes.length % elements_per_page
                         !=0){ endindex+=1 };%>
                         <% for(let i=1; i <=endindex; i++) { %>
-                            <% let params={ "page" : i, sorting}; %>
+                            <% let params={ "page" : i, sorting, searchparam: searchparam}; %>
                                 <a <% if(i==page){ %>id="active-page"<% } %> href="./<%= JSON.stringify(params) %>"><%=
                                                 i %></a>
                                 <% } %>

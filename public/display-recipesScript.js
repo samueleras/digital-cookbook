@@ -1,34 +1,36 @@
 //SORT
 
 const sort_dropdown = document.querySelector('#sort-dropdown');
+const searchparam = document.querySelector('#search-input');
 
 const sortRecipes = () => {
 
     const sort_mode = sort_dropdown.value;
+    let searchparamValue = searchparam.value;
 
     let sorting = null;
 
     switch (sort_mode) {
         case "cDesc":
-            sorting = { "page": 1, sorting: { "createdAt": -1 } };
+            sorting = { "page": 1, sorting: { "createdAt": -1 }, searchparam: searchparamValue };
             break;
         case "cAsc":
-            sorting = { "page": 1, sorting: { "createdAt": 1 } };
+            sorting = { "page": 1, sorting: { "createdAt": 1 }, searchparam: searchparamValue };
             break;
         case "rDesc":
-            sorting = { "page": 1, sorting: { "rating": -1 } };
+            sorting = { "page": 1, sorting: { "rating": -1 }, searchparam: searchparamValue };
             break;
         case "rAsc":
-            sorting = { "page": 1, sorting: { "rating": 1 } };
+            sorting = { "page": 1, sorting: { "rating": 1 }, searchparam: searchparamValue};
             break;
         case "nDesc":
-            sorting = { "page": 1, sorting: { "name": -1 } };
+            sorting = { "page": 1, sorting: { "name": -1 }, searchparam: searchparamValue };
             break;
         case "nAsc":
-            sorting = { "page": 1, sorting: { "name": 1 } };
+            sorting = { "page": 1, sorting: { "name": 1 }, searchparam: searchparamValue };
             break;
         default:
-            sorting = { "page": 1, sorting: { "createdAt": -1 } };
+            sorting = { "page": 1, sorting: { "createdAt": -1 }, searchparam: searchparamValue};
     }
 
     location.href = `./${JSON.stringify(sorting)}`;
@@ -37,7 +39,6 @@ const sortRecipes = () => {
 
 //SEARCH
 const searchform = document.querySelector('#form-search');
-const searchparam = document.querySelector('#search-input');
 
 searchform.addEventListener("submit", async (e) => {
 
@@ -46,6 +47,6 @@ searchform.addEventListener("submit", async (e) => {
     let searchparamValue = searchparam.value;
 
     const sorting = { "page": 1, sorting: { "createdAt": -1 }, searchparam: searchparamValue };
-    location.href = `/search/${JSON.stringify(sorting)}`;
+    location.href = `./${JSON.stringify(sorting)}`;
 
 });

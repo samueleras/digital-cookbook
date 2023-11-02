@@ -52,7 +52,7 @@ app.get('/', (req, res) => {
 });
 // All recipes without params
 app.get('/all-recipes', (req, res) => {
-    const sorting = {"page": 1, sorting: { "createdAt": -1 } };
+    const sorting = { "page": 1, sorting: { "createdAt": -1 } };
     res.redirect(`/all-recipes/${JSON.stringify(sorting)}`);
 });
 // All recipes with parameters for sorting and subpage
@@ -60,25 +60,13 @@ app.get('/all-recipes/:params', (req, res) => {
     const params = JSON.parse(req.params.params);
     const page = params.page;
     const sorting = params.sorting;
-    Recipe.find().sort(sorting).then((recipes) => {
+    const searchparam = params.searchparam ??= '';
+    Recipe.find({ 'name': { $regex: '.*' + searchparam + '.*', $options: 'i' } }).sort(sorting).then((recipes) => {
         User.find().then((users) => {
-            res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, users, currentUser: req.user ??= undefined, page: page, sorting });
+            res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, users, currentUser: req.user ??= undefined, page: page, sorting, searchparam: searchparam });
         }).catch((err) => { console.log(err) });
     }).catch((err) => { console.log(err) });
-});
 
-
-// Search for recipe
-app.get('/search/:params', (req, res) => {
-    const params = JSON.parse(req.params.params);
-    const page = params.page;
-    const sorting = params.sorting;
-    const searchparam = params.searchparam;
-    Recipe.find({ name: { $regex: '.*' + searchparam + '.*' } }).sort(sorting).then((recipes) => {
-        User.find().then((users) => {
-            res.render('display-recipes', { title: 'Search Result', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, users, currentUser: req.user ??= undefined, page: page, sorting });
-        }).catch((err) => { console.log(err) });
-    }).catch((err) => { console.log(err) });
 });
 
 // display recipe by id
@@ -262,7 +250,7 @@ app.post('/create-edit-submit', checkLogin, async (req, res) => {
 
 // my-recipes without params
 app.get('/my-recipes', (req, res) => {
-    const sorting = {"page": 1, sorting: { "createdAt": -1 } };
+    const sorting = { "page": 1, sorting: { "createdAt": -1 } };
     res.redirect(`/my-recipes/${JSON.stringify(sorting)}`);
 });
 // list own recipes (only for logged in users)
@@ -270,8 +258,9 @@ app.get('/my-recipes/:params', checkLogin, (req, res) => {
     const params = JSON.parse(req.params.params);
     const page = params.page;
     const sorting = params.sorting;
-    Recipe.find({ created_by: req.user.userid /* hier zusätzliches suchkriterium mit abfrage ob params.search undefined sonst * auswählen */}).sort(sorting).then((recipes) => {
-        res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, currentUser: req.user ??= undefined, page: page, sorting });
+    const searchparam = params.searchparam ??= '';
+    Recipe.find({ created_by: req.user.userid, 'name': { $regex: '.*' + searchparam + '.*', $options: 'i' } }).sort(sorting).then((recipes) => {
+        res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, currentUser: req.user ??= undefined, page: page, sorting, searchparam: searchparam });
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });
 
@@ -309,14 +298,14 @@ app.get('/recipe/unsave/:id', checkLogin, async (req, res) => {
     user.saved_recipes.splice(user.saved_recipes.indexOf(req.params.id), 1);
     user.save().then((result) => {
         console.log('Recipe ' + req.params.id + ' unsaved for user ' + req.user.username);
-        res.redirect("/saved-recipes");
+        res.redirect("/all-recipes");
     }).catch((err) => console.log('Failed saving recipe for user ' + err)); //später link redirect preventen und ggf per javascript diese gethandler aufrufen
 
 });
 
 // Saved-recipes recipes without params
 app.get('/saved-recipes', (req, res) => {
-    const sorting = {"page": 1, sorting: { "createdAt": -1 } };
+    const sorting = { "page": 1, sorting: { "createdAt": -1 } };
     res.redirect(`/saved-recipes/${JSON.stringify(sorting)}`);
 });
 // list recipes of other people that you saved/liked
@@ -324,9 +313,10 @@ app.get('/saved-recipes/:params', checkLogin, (req, res) => {
     const params = JSON.parse(req.params.params);
     const page = params.page;
     const sorting = params.sorting;
-    Recipe.find({ '_id': { $in: req.user.saved_recipes } }).sort(sorting).then((recipes) => {
+    const searchparam = params.searchparam ??= '';
+    Recipe.find({ '_id': { $in: req.user.saved_recipes }, 'name': { $regex: '.*' + searchparam + '.*', $options: 'i' } }).sort(sorting).then((recipes) => {
         User.find().then((users) => {
-            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, users, currentUser: req.user ??= undefined, page: page, sorting });
+            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, users, currentUser: req.user ??= undefined, page: page, sorting, searchparam: searchparam });
         }).catch((err) => { console.log(err) });
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });
@@ -336,16 +326,16 @@ app.post('/recipe/rate', checkLogin, async (req, res) => {
     const { rating, id } = req.body;
     let recipe = await Recipe.findById(id);
     // check if there already is rating written by this user and delete if so
-    for(let rating of recipe.ratings){
-        if(rating.userid.toString() == req.user.userid.toString()){
+    for (let rating of recipe.ratings) {
+        if (rating.userid.toString() == req.user.userid.toString()) {
             let position = recipe.ratings.indexOf(rating);
             console.log(position);
             recipe.ratings.splice(position, 1);
         }
     }
-    recipe.ratings.push({ rating: rating, userid: req.user.userid});
+    recipe.ratings.push({ rating: rating, userid: req.user.userid });
     let ratingsum = 0;
-    for( let rating of recipe.ratings){
+    for (let rating of recipe.ratings) {
         ratingsum += parseFloat(rating.rating);
     }
     recipe.rating = ratingsum / recipe.ratings.length;
