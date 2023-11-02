@@ -10,7 +10,7 @@ main {
 }
 
 .login-signup-container{
-    width: clamp(20rem, 40vw, 25rem);
+    width: clamp(18rem, 45vw, 25rem);
 }
 
 .form{
@@ -21,15 +21,18 @@ main {
 }
 
 .form h1{
+    font-size: clamp(2rem, 6vw, 3rem);
     font-weight: 700;
-    margin-bottom: 1.5rem;
+    margin-bottom: 3rem;
 }
 
 #successful[data-visible="true"]{
     position: absolute;
-    top: 7rem;
+    top: clamp(5rem, 15vw, 6rem);;
+    left: 0;
     color: #09c372;
-    padding-inline: 3rem;
+    text-align: center;
+    width: clamp(18rem, 45vw, 25rem);
 }
 
 #successful[data-visible="false"]{

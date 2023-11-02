@@ -352,15 +352,16 @@ app.use((req, res) => {
 
 
 //TODO
-//Adjust login successful text
-//Style About, little content update
-//Content + Style footer
-//Adjust css for fileupload. Not recognizable wether a file was uploaded or not. frontend js...
-//Upload mov aswell? Is png uploadable?
-//delete, save and create/edit send per frontend js, no page reload!
 //Adjust css and js filenames lowercase
-//List only 20 or 30 recipes per page
+//Content + Style footer
+
+//delete, save and create/edit send per frontend js, no page reload!
+
+//Adjust css for fileupload. Not recognizable wether a file was uploaded or not. frontend js...
+
+//Upload mov aswell? Is png uploadable?
 //Scale down, compress images
+
 //Make final Styling
 //Adjust about page, maybe with Images
 //Adjust readme file
