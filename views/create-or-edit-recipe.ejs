@@ -48,7 +48,7 @@
                     </div>
                     <div class="input-control">
                         <label for="recipe">Full Recipe:</label>
-                        <textarea id="full_recipe" name="full_recipe" required  value='<%= (typeof recipe === "undefined") ? "" : recipe.full_recipe %>'></textarea>
+                        <textarea id="full_recipe" name="full_recipe" required><%= (typeof recipe === "undefined") ? "" : recipe.full_recipe %></textarea>
                         <div class="errormessage"></div>
                     </div>
 
