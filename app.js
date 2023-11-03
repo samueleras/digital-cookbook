@@ -74,7 +74,7 @@ app.get('/recipe/display/:id', (req, res) => {
     const id = req.params.id;
     Recipe.findById(id).then((recipe) => {
         User.find().then((users) => {
-            res.render('display-recipe', { title: 'Recipe', defaultstyle: 'yes', stylefile: 'display-recipe', jsfile: 'no', recipe, users, currentUser: req.user ??= undefined });
+            res.render('display-recipe', { title: 'Recipe', defaultstyle: 'yes', stylefile: 'display-recipe', jsfile: 'display-recipe', recipe, users, currentUser: req.user ??= undefined });
         }).catch((err) => { console.log(err) });
     }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
 });
@@ -288,7 +288,7 @@ app.get('/recipe/save/:id', checkLogin, async (req, res) => {
     user.saved_recipes.push(req.params.id);
     user.save().then((result) => {
         console.log('Recipe saved for user ' + req.user.username);
-        res.redirect("/saved-recipes");         //später link redirect preventen und ggf per javascript diese gethandler aufrufen
+        res.end();
     }).catch((err) => console.log(err));
 });
 
@@ -298,7 +298,7 @@ app.get('/recipe/unsave/:id', checkLogin, async (req, res) => {
     user.saved_recipes.splice(user.saved_recipes.indexOf(req.params.id), 1);
     user.save().then((result) => {
         console.log('Recipe ' + req.params.id + ' unsaved for user ' + req.user.username);
-        res.redirect("/all-recipes");
+        res.end();
     }).catch((err) => console.log('Failed saving recipe for user ' + err)); //später link redirect preventen und ggf per javascript diese gethandler aufrufen
 
 });
@@ -329,7 +329,6 @@ app.post('/recipe/rate', checkLogin, async (req, res) => {
     for (let rating of recipe.ratings) {
         if (rating.userid.toString() == req.user.userid.toString()) {
             let position = recipe.ratings.indexOf(rating);
-            console.log(position);
             recipe.ratings.splice(position, 1);
         }
     }
@@ -352,8 +351,6 @@ app.use((req, res) => {
 
 
 //TODO
-//Content + Style footer
-
 //delete, save and create/edit send per frontend js, no page reload and frontend input check
 
 //Adjust css for fileupload. Not recognizable wether a file was uploaded or not. frontend js...

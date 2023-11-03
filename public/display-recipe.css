@@ -48,6 +48,11 @@
     position: absolute;
     top: 100vw;
     right: 1rem;
+
+}
+
+.recipe-actions a[display=false]{
+    display: none;
 }
 
 .recipe-actions a {

@@ -87,6 +87,10 @@
     background: url(icons/unlike.svg) no-repeat;
 }
 
+a[display=false]{
+    display: none;
+}
+
 .page-selector{
     display: flex;
     width: 100%;

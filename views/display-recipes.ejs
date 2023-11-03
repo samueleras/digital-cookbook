@@ -14,20 +14,27 @@
                     <div class="sort">
                         <form id="form-sort" class="form">
                             <select name="sort" id="sort-dropdown" size="1" onchange="sortRecipes()">
-                                <option value="cDesc" <% if( typeof sorting.createdAt != 'undefined' && sorting.createdAt==-1 ){ %> selected <% } %>>Sort
+                                <option value="cDesc" <% if( typeof sorting.createdAt !='undefined' &&
+                                    sorting.createdAt==-1 ){ %> selected <% } %>>Sort
                                         by Creation Date (Desc)</option>
-                                <option value="cAsc" <% if( typeof sorting.createdAt != 'undefined' && sorting.createdAt==1 ){ %> selected <% } %>>Sort by Creation Date (Asc)</option>
-                                <option value="rDesc" <% if( typeof sorting.rating != 'undefined' && sorting.rating==-1 ){ %> selected <% } %>>Sort by Rating (Desc)</option>
-                                <option value="rAsc" <% if( typeof sorting.rating != 'undefined' && sorting.rating==1 ){ %> selected <% } %>>Sort by Rating (Asc)</option>
-                                <option value="nDesc" <% if( typeof sorting.name != 'undefined' && sorting.name==-1 ){ %> selected <% } %>>Sort by Name (Desc)</option>
-                                <option value="nAsc" <% if( typeof sorting.name != 'undefined' && sorting.name==1 ){ %> selected <% } %>>Sort by Name (Asc)</option>
+                                <option value="cAsc" <% if( typeof sorting.createdAt !='undefined' &&
+                                    sorting.createdAt==1 ){ %> selected <% } %>>Sort by Creation Date (Asc)</option>
+                                <option value="rDesc" <% if( typeof sorting.rating !='undefined' && sorting.rating==-1
+                                    ){ %> selected <% } %>>Sort by Rating (Desc)</option>
+                                <option value="rAsc" <% if( typeof sorting.rating !='undefined' && sorting.rating==1 ){
+                                    %> selected <% } %>>Sort by Rating (Asc)</option>
+                                <option value="nDesc" <% if( typeof sorting.name !='undefined' && sorting.name==-1 ){ %>
+                                    selected <% } %>>Sort by Name (Desc)</option>
+                                <option value="nAsc" <% if( typeof sorting.name !='undefined' && sorting.name==1 ){ %>
+                                    selected <% } %>>Sort by Name (Asc)</option>
                             </select>
                             <button style="display: none" type="submit" ref="submit"></button>
                         </form>
                     </div>
                     <div class="search">
                         <form id="form-search" class="form">
-                            <input type="text" id="search-input" name="search" placeholder="Search for Recipe Name" value="<%= searchparam %>">
+                            <input type="text" id="search-input" name="search" placeholder="Search for Recipe Name"
+                                value="<%= searchparam %>">
                             <input type="submit" hidden />
                         </form>
                     </div>
@@ -74,12 +81,15 @@
                                             <% if( typeof currentUser !='undefined' && recipes[i].created_by
                                                 !=currentUser.userid ) { %>
                                                 <div class="recipe-actions">
-                                                    <% if( !currentUser.saved_recipes.includes(recipes[i]._id) ) { %>
-                                                        <a id="save" href="/recipe/save/<%= recipes[i]._id %>"></a>
-                                                        <% } else { %>
-                                                            <a id="unsave"
-                                                                href="/recipe/unsave/<%= recipes[i]._id %>"></a>
-                                                            <% } %>
+                                                    <% let save="false" ; let unsave="true" ; if(
+                                                        !currentUser.saved_recipes.includes(recipes[i]._id) ) {
+                                                        save="true" ;unsave="false" ; } %>
+                                                        <a id="save" display="<%= save %>"
+                                                            onclick='saveRecipe("/recipe/save/<%= recipes[i]._id %>")'
+                                                            href="javascript:void(0);"></a>
+                                                        <a id="unsave" display="<%= unsave %>"
+                                                            onclick='saveRecipe("/recipe/unsave/<%= recipes[i]._id %>")'
+                                                            href="javascript:void(0);"></a>
                                                 </div>
                                                 <% } %>
                                 </div>

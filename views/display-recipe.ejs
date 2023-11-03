@@ -64,13 +64,17 @@
                                                     </form>
                                                     <% } %>
 
-                                                        <p>Preparation Time: <span class="no-linebreak"><%= recipe.preparation_time %> min</span></p>
+                                                        <p>Preparation Time: <span class="no-linebreak">
+                                                                <%= recipe.preparation_time %> min
+                                                            </span></p>
                                                         <p>Difficulty: <%= recipe.difficulty %>
                                                         </p>
                                                         <% let username='"deleted user"' ; users.forEach(user=> {
                                                             if(user._id == recipe.created_by){ username =
                                                             user.username}});%>
-                                                            <p>Created by <span class="no-linebreak"><%= username %></span>
+                                                            <p>Created by <span class="no-linebreak">
+                                                                    <%= username %>
+                                                                </span>
                                                             </p>
                                                             <% } %>
 
@@ -92,11 +96,15 @@
                         <% } %>
                             <% if( typeof currentUser !='undefined' && recipe.created_by !=currentUser.userid ) { %>
                                 <div class="recipe-actions">
-                                    <% if( !currentUser.saved_recipes.includes(recipe._id) ) { %>
-                                        <a id="save" href="/recipe/save/<%= recipe._id %>"></a>
-                                        <% } else { %>
-                                            <a id="unsave" href="/recipe/unsave/<%= recipe._id %>"></a>
-                                            <% } %>
+                                    <% let save="false" ; let unsave="true" ; if(
+                                        !currentUser.saved_recipes.includes(recipe._id) ) { save="true" ;unsave="false"
+                                        ; } %>
+                                        <a id="save" display="<%= save %>"
+                                            onclick='saveRecipe("/recipe/save/<%= recipe._id %>")'
+                                            href="javascript:void(0);"></a>
+                                        <a id="unsave" display="<%= unsave %>"
+                                            onclick='saveRecipe("/recipe/unsave/<%= recipe._id %>")'
+                                            href="javascript:void(0);"></a>
                                 </div>
                                 <% } %>
                 </div>
