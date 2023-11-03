@@ -20,7 +20,7 @@
                     <!-- Recipe Name -->
                     <div class="input-control">
                         <label for="user">Recipe Name:</label>
-                        <input type="text" id="name" name="name" required value='<%= (typeof recipe === "undefined") ? "" : recipe.name %>'>
+                        <input type="text" id="name" name="name" value='<%= (typeof recipe === "undefined") ? "" : recipe.name %>'>
                         <div class="errormessage"></div>
                     </div>
                     <div class="input-control">
@@ -43,12 +43,12 @@
                     <!-- Estimated time of preparation of the dish -->
                     <div class="input-control">
                         <label for="preparation_time">Estimated Total Preparation Time (min):</label>
-                        <input type="text" id="preparation_time" name="preparation_time" required value='<%= (typeof recipe === "undefined") ? "" : recipe.preparation_time %>'>
+                        <input type="text" id="preparation_time" name="preparation_time" value='<%= (typeof recipe === "undefined") ? "" : recipe.preparation_time %>'>
                         <div class="errormessage"></div>
                     </div>
                     <div class="input-control">
                         <label for="recipe">Full Recipe:</label>
-                        <textarea id="full_recipe" name="full_recipe" required><%= (typeof recipe === "undefined") ? "" : recipe.full_recipe %></textarea>
+                        <textarea id="full_recipe" name="full_recipe"><%= (typeof recipe === "undefined") ? "" : recipe.full_recipe %></textarea>
                         <div class="errormessage"></div>
                     </div>
 

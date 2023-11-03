@@ -20,17 +20,13 @@
     outline: 0;
 }
 
-.form .input-control.success input{
-    border: 2px solid #09c372;
-}
-
 .form .input-control.error input{
     border: 2px solid #ff3860;
 }
 
 .form .errormessage{
-    position: absolute;
     color: #ff3860;
+    font-size: 1.2rem;
 }
 
 input[type="file"]{
