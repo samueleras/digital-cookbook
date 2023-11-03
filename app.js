@@ -20,6 +20,7 @@ const app = express();
 
 // connect to MongoDb
 const dbURI = require('./modules/mongoDbLogin.js');
+const { error } = require('console');
 mongoose.connect(dbURI)
     .then((result) => console.log('connected to db'))
     .catch((err) => console.log(err));
@@ -56,27 +57,32 @@ app.get('/all-recipes', (req, res) => {
     res.redirect(`/all-recipes/${JSON.stringify(sorting)}`);
 });
 // All recipes with parameters for sorting and subpage
-app.get('/all-recipes/:params', (req, res) => {
-    const params = JSON.parse(req.params.params);
-    const page = params.page;
-    const sorting = params.sorting;
-    const searchparam = params.searchparam ??= '';
-    Recipe.find({ 'name': { $regex: '.*' + searchparam + '.*', $options: 'i' } }).sort(sorting).then((recipes) => {
-        User.find().then((users) => {
-            res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, users, currentUser: req.user ??= undefined, page: page, sorting, searchparam: searchparam });
-        }).catch((err) => { console.log(err) });
-    }).catch((err) => { console.log(err) });
-
+app.get('/all-recipes/:params', async (req, res) => {
+    try {
+        const params = JSON.parse(req.params.params);
+        const page = params.page;
+        const sorting = params.sorting;
+        const searchparam = params.searchparam ??= '';
+        const recipes = await Recipe.find({ 'name': { $regex: '.*' + searchparam + '.*', $options: 'i' } }).sort(sorting);
+        const users = await User.find();
+        res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, users, currentUser: req.user ??= undefined, page: page, sorting, searchparam: searchparam });
+    } catch (err) {
+        console.log(err);
+        send404(res, req);
+    }
 });
 
 // display recipe by id
-app.get('/recipe/display/:id', (req, res) => {
-    const id = req.params.id;
-    Recipe.findById(id).then((recipe) => {
-        User.find().then((users) => {
-            res.render('display-recipe', { title: 'Recipe', defaultstyle: 'yes', stylefile: 'display-recipe', jsfile: 'display-recipe', recipe, users, currentUser: req.user ??= undefined });
-        }).catch((err) => { console.log(err) });
-    }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
+app.get('/recipe/display/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const recipe = await Recipe.findById(id);
+        const users = await User.find();
+        res.render('display-recipe', { title: 'Recipe', defaultstyle: 'yes', stylefile: 'display-recipe', jsfile: 'display-recipe', recipe, users, currentUser: req.user ??= undefined });
+    } catch (err) {
+        console.log(err);
+        send404(res, req);
+    }
 });
 
 // informatin of how the site works
@@ -91,10 +97,9 @@ app.get('/login', (req, res) => {
 
 // login action
 app.post('/login-submit', async (req, res) => {
-    const { username, password } = req.body;
-    let hashed_password = createHash('sha256').update(password).digest('hex');
-
     try {
+        const { username, password } = req.body;
+        let hashed_password = createHash('sha256').update(password).digest('hex');
         const users = await User.find({ username: username });
 
         if (users[0].password !== hashed_password) {
@@ -128,11 +133,10 @@ app.get('/signup', (req, res) => {
 
 // signup action
 app.post('/signup-submit', async (req, res) => {
-
-    const { username, password, password2 } = req.body;
-    let response = { user_available: false, password: "missing", password2: "missing", success: false };
-
     try {
+        const { username, password, password2 } = req.body;
+        let response = { user_available: false, password: "missing", password2: "missing", success: false };
+
         // Search for user in DB
         const users = await User.find({ username: username });
 
@@ -193,6 +197,7 @@ app.get('/recipe/edit/:id', checkLogin, async (req, res) => {
         res.render('create-or-edit-recipe', { title: 'Edit Recipe', defaultstyle: 'yes', stylefile: 'create-edit', jsfile: 'no', currentUser: req.user ??= undefined, edit_create: 'Edit', recipe });
     } catch (err) {
         console.log("Failed to edit recipe: " + err);
+        send404(res, req);
     }
 });
 
@@ -242,10 +247,15 @@ app.post('/create-edit-submit', checkLogin, async (req, res) => {
             console.log("Failed to find recipe for edit: " + err);
         }
     }
-    recipe.save().then((result) => {
+    try {
+        const result = await recipe.save();
         console.log('recipe saved/edited');
         res.redirect(`recipe/display/${result._id}`);
-    }).catch((err) => console.log(err));
+    } catch (err) {
+        console.log("Failed to save recipe: " + err);
+        send404(res, req);
+    }
+
 });
 
 // my-recipes without params
@@ -254,14 +264,18 @@ app.get('/my-recipes', (req, res) => {
     res.redirect(`/my-recipes/${JSON.stringify(sorting)}`);
 });
 // list own recipes (only for logged in users)
-app.get('/my-recipes/:params', checkLogin, (req, res) => {
-    const params = JSON.parse(req.params.params);
-    const page = params.page;
-    const sorting = params.sorting;
-    const searchparam = params.searchparam ??= '';
-    Recipe.find({ created_by: req.user.userid, 'name': { $regex: '.*' + searchparam + '.*', $options: 'i' } }).sort(sorting).then((recipes) => {
+app.get('/my-recipes/:params', checkLogin, async (req, res) => {
+    try {
+        const params = JSON.parse(req.params.params);
+        const page = params.page;
+        const sorting = params.sorting;
+        const searchparam = params.searchparam ??= '';
+        const recipes = await Recipe.find({ created_by: req.user.userid, 'name': { $regex: '.*' + searchparam + '.*', $options: 'i' } }).sort(sorting);
         res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, currentUser: req.user ??= undefined, page: page, sorting, searchparam: searchparam });
-    }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
+    } catch (err) {
+        console.log(err);
+        send404(res, req);
+    }
 });
 
 // delete a recipe
@@ -279,17 +293,20 @@ app.get('/recipe/delete/:id', checkLogin, async (req, res) => {
     } catch (err) {
         console.log("Failed deleting recipe: " + err);
     }
-    res.redirect("/my-recipes");         //später link redirect preventen und ggf per javascript diese gethandler aufrufen und auf DELETE umstellen anstatt GET
+    res.redirect("/my-recipes");
 });
 
 // save a recipe
 app.get('/recipe/save/:id', checkLogin, async (req, res) => {
-    let user = await User.findById(req.user.userid);
-    user.saved_recipes.push(req.params.id);
-    user.save().then((result) => {
+    try {
+        let user = await User.findById(req.user.userid);
+        user.saved_recipes.push(req.params.id);
+        await user.save();
         console.log('Recipe saved for user ' + req.user.username);
         res.end();
-    }).catch((err) => console.log(err));
+    } catch (err) {
+        console.log("Failed to add recipe to a users saved recipes");
+    }
 });
 
 // unsave a recipe
@@ -309,49 +326,60 @@ app.get('/saved-recipes', (req, res) => {
     res.redirect(`/saved-recipes/${JSON.stringify(sorting)}`);
 });
 // list recipes of other people that you saved/liked
-app.get('/saved-recipes/:params', checkLogin, (req, res) => {
-    const params = JSON.parse(req.params.params);
-    const page = params.page;
-    const sorting = params.sorting;
-    const searchparam = params.searchparam ??= '';
-    Recipe.find({ '_id': { $in: req.user.saved_recipes }, 'name': { $regex: '.*' + searchparam + '.*', $options: 'i' } }).sort(sorting).then((recipes) => {
-        User.find().then((users) => {
-            res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, users, currentUser: req.user ??= undefined, page: page, sorting, searchparam: searchparam });
-        }).catch((err) => { console.log(err) });
-    }).catch((err) => { res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: 'no', jsfile: 'no', currentUser: req.user ??= undefined }) });
+app.get('/saved-recipes/:params', checkLogin, async (req, res) => {
+    try {
+        const params = JSON.parse(req.params.params);
+        const page = params.page;
+        const sorting = params.sorting;
+        const searchparam = params.searchparam ??= '';
+        const recipes = await Recipe.find({ '_id': { $in: req.user.saved_recipes }, 'name': { $regex: '.*' + searchparam + '.*', $options: 'i' } }).sort(sorting);
+        const users = await User.find();
+        res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, users, currentUser: req.user ??= undefined, page: page, sorting, searchparam: searchparam });
+    } catch (err) {
+        console.log(err);
+        send404(res, req);
+    }
 });
 
 // rate a recipe
 app.post('/recipe/rate', checkLogin, async (req, res) => {
-    const { rating, id } = req.body;
-    let recipe = await Recipe.findById(id);
-    // check if there already is rating written by this user and delete if so
-    for (let rating of recipe.ratings) {
-        if (rating.userid.toString() == req.user.userid.toString()) {
-            let position = recipe.ratings.indexOf(rating);
-            recipe.ratings.splice(position, 1);
+    try {
+        const { rating, id } = req.body;
+        let recipe = await Recipe.findById(id);
+        // check if there already is rating written by this user and delete if so
+        for (let rating of recipe.ratings) {
+            if (rating.userid.toString() == req.user.userid.toString()) {
+                let position = recipe.ratings.indexOf(rating);
+                recipe.ratings.splice(position, 1);
+            }
         }
-    }
-    recipe.ratings.push({ rating: rating, userid: req.user.userid });
-    let ratingsum = 0;
-    for (let rating of recipe.ratings) {
-        ratingsum += parseFloat(rating.rating);
-    }
-    recipe.rating = ratingsum / recipe.ratings.length;
-    recipe.save().then((result) => {
+        recipe.ratings.push({ rating: rating, userid: req.user.userid });
+        let ratingsum = 0;
+        for (let rating of recipe.ratings) {
+            ratingsum += parseFloat(rating.rating);
+        }
+        recipe.rating = ratingsum / recipe.ratings.length;
+        const result = await recipe.save();
         console.log('Recipe rating saved');
         res.redirect(`/recipe/display/${result._id}`);
-    }).catch((err) => console.log(err));
+    } catch (err) {
+        console.log("Failed to rate recipe. ", err);
+        send404(res, req);
+    }
 });
 
 // errorpage
 app.use((req, res) => {
-    res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: '404', jsfile: 'no', currentUser: req.user ??= undefined });
+    send404(res, req);
 });
+
+const send404 = (res, req) => {
+    res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: '404', jsfile: 'no', currentUser: req.user ??= undefined });
+}
 
 
 //TODO
-//delete, save and create/edit send per frontend js, no page reload and frontend input check
+//create/edot frontend input check
 
 //Adjust css for fileupload. Not recognizable wether a file was uploaded or not. frontend js...
 
