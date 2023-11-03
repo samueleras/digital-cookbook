@@ -75,7 +75,8 @@
                                         ) { %>
                                         <div class="recipe-actions">
                                             <a id="edit" href="/recipe/edit/<%= recipes[i]._id %>"></a>
-                                            <a id="delete" href="/recipe/delete/<%= recipes[i]._id %>"></a>
+                                            <a id="delete" onclick='deleteRecipe("/recipe/delete/<%= recipes[i]._id %>", this.parentElement.parentElement)'
+                                                href="javascript:void(0);"></a>
                                         </div>
                                         <% } %>
                                             <% if( typeof currentUser !='undefined' && recipes[i].created_by

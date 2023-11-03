@@ -51,11 +51,6 @@ searchform.addEventListener("submit", async (e) => {
 
 });
 
-
-//DELETE
-
-
-
 //SAVE/UNSAVE
 const savebutton = document.querySelector('#save');
 const unsavebutton = document.querySelector('#unsave');
@@ -72,4 +67,11 @@ const saveRecipe = async (url) => {
         unsavebutton.setAttribute("display", true);
     }
 
+}
+
+
+//DELETE
+const deleteRecipe = async (url, recipe) => {
+    await fetch(url);
+    recipe.setAttribute("style", "display:none;");
 }
