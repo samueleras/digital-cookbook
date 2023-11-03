@@ -40,10 +40,10 @@
                     </div>
                 </div>
 
-                <div class="grid-container-recipes">
-                    <% let elements_per_page=2; let endindex=page * elements_per_page; let startindex=endindex -
-                        elements_per_page; if(recipes.length < endindex){ endindex=recipes.length } %>
-                        <% if(recipes.length> 0) { %>
+                <% let elements_per_page=2; let endindex=page * elements_per_page; let startindex=endindex -
+                    elements_per_page; if(recipes.length < endindex){ endindex=recipes.length } %>
+                    <% if(recipes.length> 0) { %>
+                        <div class="grid-container-recipes">
                             <% for(let i=startindex; i < endindex; i++) { %>
                                 <div class="recipe">
                                     <a class="flex-container-recipe" href="/recipe/display/<%= recipes[i]._id %>">
@@ -75,7 +75,8 @@
                                         ) { %>
                                         <div class="recipe-actions">
                                             <a id="edit" href="/recipe/edit/<%= recipes[i]._id %>"></a>
-                                            <a id="delete" onclick='deleteRecipe("/recipe/delete/<%= recipes[i]._id %>", this.parentElement.parentElement)'
+                                            <a id="delete"
+                                                onclick='deleteRecipe("/recipe/delete/<%= recipes[i]._id %>", this.parentElement.parentElement)'
                                                 href="javascript:void(0);"></a>
                                         </div>
                                         <% } %>
@@ -95,22 +96,22 @@
                                                 <% } %>
                                 </div>
                                 <% } %>
-                </div>
+                        </div>
 
-                <div class="page-selector">
-                    <% endindex=Math.floor(recipes.length / elements_per_page); if(recipes.length % elements_per_page
-                        !=0){ endindex+=1 };%>
-                        <% for(let i=1; i <=endindex; i++) { %>
-                            <% let params={ "page" : i, sorting, searchparam: searchparam}; %>
-                                <a <% if(i==page){ %>id="active-page"<% } %> href="./<%= JSON.stringify(params) %>"><%=
-                                                i %></a>
-                                <% } %>
-                </div>
+                        <div class="page-selector">
+                            <% endindex=Math.floor(recipes.length / elements_per_page); if(recipes.length %
+                                elements_per_page !=0){ endindex+=1 };%>
+                                <% for(let i=1; i <=endindex; i++) { %>
+                                    <% let params={ "page" : i, sorting, searchparam: searchparam}; %>
+                                        <a <% if(i==page){ %>id="active-page"<% } %> href="./<%= JSON.stringify(params)
+                                                    %>"><%= i %></a>
+                                        <% } %>
+                        </div>
 
-                <% } else {%>
-                    <br>
-                    <h2>No recipes found...</h2>
-                    <% } %>
+                        <% } else {%>
+                            <br>
+                            <h2 id="no-recipes">No recipes found...</h2>
+                            <% } %>
 
             </main>
 

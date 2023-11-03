@@ -109,6 +109,10 @@ a[display=false]{
     color: rgb(23, 146, 64);
 }
 
+#no-recipes{
+    text-align: center;
+}
+
 /* On screens that are 800px or more (TABLET/DESKTOP) */
 @media screen and (min-width: 800px) {
 
