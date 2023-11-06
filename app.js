@@ -217,7 +217,7 @@ app.post('/create-edit-submit', checkLogin, async (req, res) => {
             image_link = '/recipe_images/uploaded' + image_name;
             let absolute_image_link = __dirname + "/public" + image_link;
             const compressimages = async () => {
-                const task1 = sharp(image.data).rotate().resize(400, 400).toFile(absolute_image_link + "_mobile.webp");
+                const task1 = sharp(image.data).rotate().resize(100, 100).toFile(absolute_image_link + "_mobile.webp");
                 const task2 = sharp(image.data).rotate().resize(640, 640).toFile(absolute_image_link + "_desktop.webp");
                 const task3 = sharp(image.data).rotate().toFile(absolute_image_link + "_maxres.webp");
                 await task1;
