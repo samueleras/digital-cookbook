@@ -19,7 +19,7 @@
                     </div>
                     <!-- Recipe Name -->
                     <div class="input-control">
-                        <label for="user">Recipe Name:</label>
+                        <label for="name">Recipe Name:</label>
                         <input type="text" id="name" name="name" value='<%= (typeof recipe === "undefined") ? "" : recipe.name %>'>
                         <div class="errormessage"></div>
                     </div>
@@ -47,7 +47,7 @@
                         <div class="errormessage"></div>
                     </div>
                     <div class="input-control">
-                        <label for="recipe">Full Recipe:</label>
+                        <label for="full_recipe">Full Recipe:</label>
                         <textarea id="full_recipe" name="full_recipe"><%= (typeof recipe === "undefined") ? "" : recipe.full_recipe %></textarea>
                         <div class="errormessage"></div>
                     </div>

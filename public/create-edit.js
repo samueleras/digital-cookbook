@@ -9,15 +9,17 @@ const form = document.querySelector('#form-new-recipe');
 const recipename = document.querySelector('#name');
 const preparation_time = document.querySelector('#preparation_time');
 const full_recipe = document.querySelector('#full_recipe');
+const submit_button = document.querySelector('button[type=submit]');
 
 
 form.addEventListener("submit", (e) => {
 
-    console.log("submitted")
+    submit_button.disabled = true;
+    console.log("test");
 
     if (inputError()) {
         e.preventDefault();
-        console.log("prevent")
+        submit_button.disabled = false;
     }
 
 });

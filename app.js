@@ -14,6 +14,7 @@ const { createHash } = require('crypto');
 const fileUpload = require('express-fileupload');
 const { v4: uuid } = require('uuid');
 const fs = require('fs');
+const sharp = require('sharp')
 
 // express app
 const app = express();
@@ -206,17 +207,24 @@ app.post('/create-edit-submit', checkLogin, async (req, res) => {
 
     const { mode, name, difficulty, preparation_time, full_recipe } = req.body;
 
-    let default_image_link = "/recipe_images/default.jpg";
+    let default_image_link = "/recipe_images/default";
     let image_link = default_image_link;
     let image_name = uuid();
 
     try {
-        const { image } = req.files;
+        const image = req.files.image;
         if (image && /^image/.test(image.mimetype)) {
-            let fileExtension = "." + image.name.split('.').pop();
-            image_link = '/recipe_images/uploaded' + image_name + fileExtension;
+            image_link = '/recipe_images/uploaded' + image_name;
             let absolute_image_link = __dirname + "/public" + image_link;
-            image.mv(absolute_image_link);
+            const compressimages = async () => {
+                const task1 = sharp(image.data).rotate().resize(400, 400).toFile(absolute_image_link + "_mobile.webp");
+                const task2 = sharp(image.data).rotate().resize(640, 640).toFile(absolute_image_link + "_desktop.webp");
+                const task3 = sharp(image.data).rotate().toFile(absolute_image_link + "_maxres.webp");
+                await task1;
+                await task2;
+                await task3;
+            }
+            await compressimages();
         }
     } catch (err) {
         console.log("No picture uploaded... using default");
@@ -282,11 +290,14 @@ app.get('/my-recipes/:params', checkLogin, async (req, res) => {
 app.get('/recipe/delete/:id', checkLogin, async (req, res) => {
     try {
         let recipe = await Recipe.findById(req.params.id);
-        if (recipe.image_link != "/recipe_images/default.jpg") {
+        if (recipe.image_link != "/recipe_images/default") {
             let absolute_image_link = __dirname + "/public" + recipe.image_link;
-            if (fs.existsSync(absolute_image_link)) {
-                fs.unlink(absolute_image_link, (err) => console.log(err));
-            }
+            let images = ["_mobile.webp", "_desktop.webp", "_maxres.webp"];
+            images.forEach((image) => {
+                if (fs.existsSync(absolute_image_link + image)) {
+                    fs.unlink(absolute_image_link + image, () => {});
+                }
+            });
         }
         await Recipe.findByIdAndDelete(req.params.id);
         console.log("Deleted recipe with id: " + req.params.id)
@@ -379,7 +390,7 @@ const send404 = (res, req) => {
 
 
 //TODO
-//Scale down, compress images (to webp?)
+//delete old images on image edit
 
 //Make final Styling
 //Adjust about page, maybe with Images
