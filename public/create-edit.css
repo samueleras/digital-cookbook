@@ -29,6 +29,16 @@
     font-size: 1.2rem;
 }
 
+.form div[upload-status="success"]{
+    color: rgb(5, 77, 15);
+    font-size: 1.2rem;
+}
+
+.form div[upload-status="error"]{
+    color: #ff3860;
+    font-size: 1.2rem;
+}
+
 input[type="file"]{
     display: none;
 }

@@ -379,11 +379,6 @@ const send404 = (res, req) => {
 
 
 //TODO
-//create/edot frontend input check
-
-//Adjust css for fileupload. Not recognizable wether a file was uploaded or not. frontend js...
-
-//Upload mov aswell? Is png uploadable?
 //Scale down, compress images (to webp?)
 
 //Make final Styling

@@ -68,4 +68,24 @@ function formSucess(element) {
 }
 
 
+// Check file upload
+let input = document.querySelectorAll("input[type=file]");
+
+input[0].addEventListener('change', function (e) {
+
+    let statusmessage = this.nextElementSibling;
+
+    let fileExtension = this.files[0].name.split('.').pop();
+
+    const allowedFormats = ["jpg", "jpeg", "png", "gif", "webp"];
+    let allowedFormatsRegex = new RegExp(allowedFormats.join("|"), "i");
+
+    if (allowedFormatsRegex.test(fileExtension)) {
+        statusmessage.innerHTML = this.files[0].name + " uploaded";
+        statusmessage.setAttribute('upload-status', 'success');
+    } else {
+        statusmessage.innerHTML = "Files of type " + fileExtension + " are not supported";
+        statusmessage.setAttribute('upload-status', 'error');
+    }
+});
 
