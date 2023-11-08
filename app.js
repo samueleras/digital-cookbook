@@ -216,15 +216,12 @@ app.post('/create-edit-submit', checkLogin, async (req, res) => {
         if (image && /^image/.test(image.mimetype)) {
             image_link = '/recipe_images/uploaded' + image_name;
             let absolute_image_link = __dirname + "/public" + image_link;
-            const compressimages = async () => {
-                const task1 = sharp(image.data).rotate().resize(100, 100).toFile(absolute_image_link + "_mobile.webp");
-                const task2 = sharp(image.data).rotate().resize(640, 640).toFile(absolute_image_link + "_desktop.webp");
-                const task3 = sharp(image.data).rotate().toFile(absolute_image_link + "_maxres.webp");
-                await task1;
-                await task2;
-                await task3;
-            }
-            await compressimages();
+            const task1 = sharp(image.data).rotate().resize(100, 100).toFile(absolute_image_link + "_mobile.webp");
+            const task2 = sharp(image.data).rotate().resize(640, 640).toFile(absolute_image_link + "_desktop.webp");
+            const task3 = sharp(image.data).rotate().toFile(absolute_image_link + "_maxres.webp");
+            await task1;
+            await task2;
+            await task3;
         }
     } catch (err) {
         console.log("No picture uploaded... using default");
@@ -246,6 +243,14 @@ app.post('/create-edit-submit', checkLogin, async (req, res) => {
             recipe = await Recipe.findById(mode);
             recipe.name = name;
             if (image_link != default_image_link) {
+                //Delete overwritten images
+                if(recipe.image_link != default_image_link){
+                    let imagesizes = ["_mobile.webp", "_desktop.webp", "_maxres.webp"];
+                    imagesizes.forEach((imagesize) => {
+                        fs.unlink(__dirname + "/public" + recipe.image_link + imagesize, () => {});
+                    });
+                }
+                //Write link of new images
                 recipe.image_link = image_link;
             }
             recipe.difficulty = difficulty;
@@ -292,10 +297,12 @@ app.get('/recipe/delete/:id', checkLogin, async (req, res) => {
         let recipe = await Recipe.findById(req.params.id);
         if (recipe.image_link != "/recipe_images/default") {
             let absolute_image_link = __dirname + "/public" + recipe.image_link;
-            let images = ["_mobile.webp", "_desktop.webp", "_maxres.webp"];
-            images.forEach((image) => {
-                if (fs.existsSync(absolute_image_link + image)) {
-                    fs.unlink(absolute_image_link + image, () => {});
+            let imagesizes = ["_mobile.webp", "_desktop.webp", "_maxres.webp"];
+            imagesizes.forEach((imagesize) => {
+                try {
+                    fs.unlink(absolute_image_link + imagesize, () => {});
+                } catch (err) {
+                    console.log("Failed to delete images of deleted recipe")
                 }
             });
         }
@@ -317,18 +324,22 @@ app.get('/recipe/save/:id', checkLogin, async (req, res) => {
         res.end();
     } catch (err) {
         console.log("Failed to add recipe to a users saved recipes");
+        res.end();
     }
 });
 
 // unsave a recipe
 app.get('/recipe/unsave/:id', checkLogin, async (req, res) => {
-    let user = await User.findById(req.user.userid);
-    user.saved_recipes.splice(user.saved_recipes.indexOf(req.params.id), 1);
-    user.save().then((result) => {
+    try{
+        let user = await User.findById(req.user.userid);
+        user.saved_recipes.splice(user.saved_recipes.indexOf(req.params.id), 1);
+        user.save()
         console.log('Recipe ' + req.params.id + ' unsaved for user ' + req.user.username);
         res.end();
-    }).catch((err) => console.log('Failed saving recipe for user ' + err)); //später link redirect preventen und ggf per javascript diese gethandler aufrufen
-
+    } catch (err) {
+        console.log('Failed saving recipe for user ' + err);
+        res.end();
+    }
 });
 
 // Saved-recipes recipes without params
@@ -390,8 +401,9 @@ const send404 = (res, req) => {
 
 
 //TODO
-//delete old images on image edit
+//Background image for Heading
 
 //Make final Styling
+
 //Adjust about page, maybe with Images
 //Adjust readme file
