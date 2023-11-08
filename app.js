@@ -24,7 +24,7 @@ const dbURI = require('./modules/mongoDbLogin.js');
 const { error } = require('console');
 mongoose.connect(dbURI)
     .then((result) => console.log('connected to db'))
-    .catch((err) => console.log(err));
+    .catch((err) => console.log('Couldn\'t connect to db' + err));
 
 // register view engine
 app.set('view engine', 'ejs');
@@ -68,7 +68,7 @@ app.get('/all-recipes/:params', async (req, res) => {
         const users = await User.find();
         res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, users, currentUser: req.user ??= undefined, page: page, sorting, searchparam: searchparam });
     } catch (err) {
-        console.log(err);
+        console.log("Failed to display all-recipes. " + err);
         send404(res, req);
     }
 });
@@ -81,7 +81,7 @@ app.get('/recipe/display/:id', async (req, res) => {
         const users = await User.find();
         res.render('display-recipe', { title: 'Recipe', defaultstyle: 'yes', stylefile: 'display-recipe', jsfile: 'display-recipe', recipe, users, currentUser: req.user ??= undefined });
     } catch (err) {
-        console.log(err);
+        console.log("Failed to display single recipe. " + err);
         send404(res, req);
     }
 });
@@ -102,11 +102,12 @@ app.post('/login-submit', async (req, res) => {
         const { username, password } = req.body;
         let hashed_password = createHash('sha256').update(password).digest('hex');
         const users = await User.find({ username: username });
-
+        if (!users.length) {
+            throw new Error("User doesn\'t exist!");
+        }
         if (users[0].password !== hashed_password) {
-            throw new Error("On login: Password is wrong!")
+            throw new Error("Password is wrong!")
         } else {
-            console.log("Login successful")
             let user = { userid: users[0]._id, username: users[0].username, saved_recipes: users[0].saved_recipes };
             const token = jwt.sign(user, jwtEncryptionKey, { expiresIn: "1h" });
             res.cookie("token", token, {
@@ -116,7 +117,7 @@ app.post('/login-submit', async (req, res) => {
         }
     }
     catch (err) {
-        console.log(err);
+        console.log("Failed to login. " + err);
         res.send({ success: false });
     }
 });
@@ -134,18 +135,17 @@ app.get('/signup', (req, res) => {
 
 // signup action
 app.post('/signup-submit', async (req, res) => {
+    let response = { user_available: false, password: "missing", password2: "missing", success: false };
+
     try {
         const { username, password, password2 } = req.body;
-        let response = { user_available: false, password: "missing", password2: "missing", success: false };
 
         // Search for user in DB
         const users = await User.find({ username: username });
-
         // check if username is available
         if (username != "" && typeof users[0] == 'undefined') {
             response.user_available = true;
         }
-
         // password check
         if (password === "") {
             response.password = "missing";
@@ -163,24 +163,24 @@ app.post('/signup-submit', async (req, res) => {
         else {
             response.password2 = "ok";
         }
-
+        // create user
         if (response.user_available && response.password == "ok" && response.password2 == "ok") {
-
-            response.success = true;
-            let hashed_password = createHash('sha256').update(password).digest('hex');
-
-            const user = new User({
-                username: username,
-                password: hashed_password
-            });
-            user.save().then((result) => {
+            try {
+                response.success = true;
+                let hashed_password = createHash('sha256').update(password).digest('hex');
+                const user = new User({
+                    username: username,
+                    password: hashed_password
+                });
+                user.save();
                 console.log('New user saved to DB');
-            }).catch((err) => console.log(err));
+            } catch (err) { throw "Credentials ok. Failed so save user to db. " + err; }
         }
         res.send(response);
     }
     catch (err) {
-        console.log(err);
+        console.log("Failed to signup user. " + err);
+        response = { user_available: false, password: "ok", password2: "ok", success: false };
         res.send(response);
     }
 
@@ -205,13 +205,13 @@ app.get('/recipe/edit/:id', checkLogin, async (req, res) => {
 // submit created recipe
 app.post('/create-edit-submit', checkLogin, async (req, res) => {
 
-    const { mode, name, difficulty, preparation_time, full_recipe } = req.body;
-
-    let default_image_link = "/recipe_images/default";
-    let image_link = default_image_link;
-    let image_name = uuid();
-
     try {
+        const { mode, name, difficulty, preparation_time, full_recipe } = req.body;
+
+        let default_image_link = "/recipe_images/default";
+        let image_link = default_image_link;
+        let image_name = uuid();
+
         const image = req.files.image;
         if (image && /^image/.test(image.mimetype)) {
             image_link = '/recipe_images/uploaded' + image_name;
@@ -223,44 +223,43 @@ app.post('/create-edit-submit', checkLogin, async (req, res) => {
             await task2;
             await task3;
         }
-    } catch (err) {
-        console.log("No picture uploaded... using default");
-    }
 
-    let recipe;
+        let recipe;
 
-    if (mode === 'create') {
-        recipe = new Recipe({
-            created_by: req.user.userid,
-            name: name,
-            image_link: image_link,
-            difficulty: difficulty,
-            preparation_time: preparation_time,
-            full_recipe: full_recipe
-        });
-    } else {
-        try {
-            recipe = await Recipe.findById(mode);
-            recipe.name = name;
-            if (image_link != default_image_link) {
-                //Delete overwritten images
-                if(recipe.image_link != default_image_link){
-                    let imagesizes = ["_mobile.webp", "_desktop.webp", "_maxres.webp"];
-                    imagesizes.forEach((imagesize) => {
-                        fs.unlink(__dirname + "/public" + recipe.image_link + imagesize, () => {});
-                    });
+        if (mode === 'create') {    //on creation
+            recipe = new Recipe({
+                created_by: req.user.userid,
+                name: name,
+                image_link: image_link,
+                difficulty: difficulty,
+                preparation_time: preparation_time,
+                full_recipe: full_recipe
+            });
+        } else {                    //on edit
+            try {
+                recipe = await Recipe.findById(mode);
+                recipe.name = name;
+                if (image_link != default_image_link) {
+                    //Delete overwritten images
+                    if (recipe.image_link != default_image_link) {
+                        let imagesizes = ["_mobile.webp", "_desktop.webp", "_maxres.webp"];
+                        imagesizes.forEach((imagesize) => {
+                            try {
+                                fs.unlink(__dirname + "/public" + recipe.image_link + imagesize, () => { });
+                            } catch (err) { console.log("Couldn't delete overwritten images on recipe edit.") }
+                        });
+                    }
+                    //Write link of new images
+                    recipe.image_link = image_link;
                 }
-                //Write link of new images
-                recipe.image_link = image_link;
+                recipe.difficulty = difficulty;
+                recipe.preparation_time = preparation_time;
+                recipe.full_recipe = full_recipe;
+            } catch (err) {
+                throw "Error on recipe edit: " + err;
             }
-            recipe.difficulty = difficulty;
-            recipe.preparation_time = preparation_time;
-            recipe.full_recipe = full_recipe;
-        } catch (err) {
-            console.log("Failed to find recipe for edit: " + err);
         }
-    }
-    try {
+
         const result = await recipe.save();
         console.log('recipe saved/edited');
         res.redirect(`recipe/display/${result._id}`);
@@ -268,7 +267,6 @@ app.post('/create-edit-submit', checkLogin, async (req, res) => {
         console.log("Failed to save recipe: " + err);
         send404(res, req);
     }
-
 });
 
 // my-recipes without params
@@ -286,7 +284,7 @@ app.get('/my-recipes/:params', checkLogin, async (req, res) => {
         const recipes = await Recipe.find({ created_by: req.user.userid, 'name': { $regex: '.*' + searchparam + '.*', $options: 'i' } }).sort(sorting);
         res.render('display-recipes', { title: 'My Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, currentUser: req.user ??= undefined, page: page, sorting, searchparam: searchparam });
     } catch (err) {
-        console.log(err);
+        console.log("Failed to display my-recipes." + err);
         send404(res, req);
     }
 });
@@ -300,21 +298,21 @@ app.get('/recipe/delete/:id', checkLogin, async (req, res) => {
             let imagesizes = ["_mobile.webp", "_desktop.webp", "_maxres.webp"];
             imagesizes.forEach((imagesize) => {
                 try {
-                    fs.unlink(absolute_image_link + imagesize, () => {});
+                    fs.unlink(absolute_image_link + imagesize, () => { });
                 } catch (err) {
-                    console.log("Failed to delete images of deleted recipe")
+                    throw "Failed to delete images." + err;
                 }
             });
         }
         await Recipe.findByIdAndDelete(req.params.id);
         console.log("Deleted recipe with id: " + req.params.id)
     } catch (err) {
-        console.log("Failed deleting recipe: " + err);
+        console.log("Failed deleting recipe. " + err);
     }
     res.redirect("/my-recipes");
 });
 
-// save a recipe
+// like a recipe
 app.get('/recipe/save/:id', checkLogin, async (req, res) => {
     try {
         let user = await User.findById(req.user.userid);
@@ -323,21 +321,21 @@ app.get('/recipe/save/:id', checkLogin, async (req, res) => {
         console.log('Recipe saved for user ' + req.user.username);
         res.end();
     } catch (err) {
-        console.log("Failed to add recipe to a users saved recipes");
+        console.log("Failed like a recipe. " + err);
         res.end();
     }
 });
 
-// unsave a recipe
+// unlike a recipe
 app.get('/recipe/unsave/:id', checkLogin, async (req, res) => {
-    try{
+    try {
         let user = await User.findById(req.user.userid);
         user.saved_recipes.splice(user.saved_recipes.indexOf(req.params.id), 1);
         user.save()
         console.log('Recipe ' + req.params.id + ' unsaved for user ' + req.user.username);
         res.end();
     } catch (err) {
-        console.log('Failed saving recipe for user ' + err);
+        console.log('Failed to unlike a recipe. ' + err);
         res.end();
     }
 });
@@ -358,7 +356,7 @@ app.get('/saved-recipes/:params', checkLogin, async (req, res) => {
         const users = await User.find();
         res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, users, currentUser: req.user ??= undefined, page: page, sorting, searchparam: searchparam });
     } catch (err) {
-        console.log(err);
+        console.log("Failed to display saved-recipes. " + err);
         send404(res, req);
     }
 });
