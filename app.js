@@ -64,7 +64,7 @@ app.get('/all-recipes/:params', async (req, res) => {
         const page = params.page;
         const sorting = params.sorting;
         const searchparam = params.searchparam ??= '';
-        const recipes = await Recipe.find({ 'name': { $regex: '.*' + searchparam + '.*', $options: 'i' } }).sort(sorting);
+        const recipes = await Recipe.find({ 'name': { $regex: '.*' + searchparam + '.*', $options: 'i' } }).sort(sorting).limit(400);
         const users = await User.find();
         res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, users, currentUser: req.user ??= undefined, page: page, sorting, searchparam: searchparam });
     } catch (err) {
