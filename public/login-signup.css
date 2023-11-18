@@ -1,6 +1,20 @@
+.background{
+    background-image: url(/page_images/banner.svg);
+    background-repeat: repeat;
+    background-position-y: -1rem;
+    filter: blur(2px);
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: -10;
+    background-color: rgba(152, 163, 108, 0.5);
+}
+
+body{
+        background-color: rgba(194, 33, 33, 0);
+}
 
 main {
-    background-image: linear-gradient(to right, #1f5236, #203a43, #1f5236);
     margin: 0;
     /* Centers login-signup-container horizontally und vertically */
     display: flex;
@@ -10,29 +24,39 @@ main {
 }
 
 .login-signup-container{
-    width: clamp(18rem, 45vw, 25rem);
+    width: clamp(18rem, 80vw, 25rem);
 }
 
 .form{
     position: relative;
     background-color: rgb(228, 228, 228);
     border-radius: .2rem;
-    padding: 3rem;
+    padding: clamp(2rem, 6vw,3rem);
+    padding-top: 7rem;
 }
 
 .form h1{
-    font-size: clamp(2rem, 6vw, 3rem);
+    font-size: clamp(2.5rem, 8vw, 3rem);
     font-weight: 700;
     margin-bottom: 3rem;
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    width: clamp(18rem, 80vw, 25rem);
+}
+
+.form label{
+    font-size: clamp(1.2rem, 3vw, 2rem);
 }
 
 #successful[data-visible="true"]{
     position: absolute;
-    top: clamp(5rem, 15vw, 6rem);;
+    top: 4rem;
     left: 0;
-    color: #09c372;
     text-align: center;
-    width: clamp(18rem, 45vw, 25rem);
+    width: clamp(18rem, 80vw, 25rem);
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    color: #09c372;
 }
 
 #successful[data-visible="false"]{

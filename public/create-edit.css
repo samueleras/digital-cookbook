@@ -1,7 +1,7 @@
 .form{
     padding: 2rem;
     font-size: 1.7rem;
-    background-color: rgb(228, 228, 228);
+    background-color: rgb(194, 194, 194);
 }
 
 .form .input-control{
@@ -54,7 +54,7 @@ label[for="image"]{
 }
 
 label[for="image"]:hover{
-    background-color: hsla(189, 34%, 52%, 0.3);
+    background-color: hsla(0, 0%, 49%, 0.3);
 }
 
 #upload-icon{

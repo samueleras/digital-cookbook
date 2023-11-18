@@ -2,41 +2,73 @@
     box-sizing: border-box;
 }
 
+@font-face {
+    font-family: "CinnamonCoffeCake";
+    src: url('fonts/CinnamonCoffeCake-Ea2Pr.ttf') format('truetype');
+}
+
 body {
     margin: 0;
     padding: 0;
-    font-family: Georgia, 'Times New Roman', Times, serif
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    background-color: var(--body-background);
+    /*     background-image: url(/page_images/banner.svg);
+    background-repeat: no-repeat;
+    background-size: cover; */
 }
 
 :root {
     --gray: rgba(218, 224, 230, 1);
-    --white: rgba(247, 247, 245, 1);
+    --white: #ffffff;
     --border: rgb(150, 150, 150);
-    --primary-background: rgb(255, 255, 255);
-    --secondary-background: rgb(214, 214, 191);
+    --primary-background: #98A36C;
+    --body-background: rgba(152, 163, 108, 0.5);
+    --secondary-background: #fcf7b6;
+    --text: #202020;
+    --nav-text: #202020;
 }
 
-main {
-    padding-top: 3rem;
+.titlebanner {
+    background-image: url(/page_images/banner.svg);
+    background-repeat: repeat;
+    background-position-y: 3px;
+    padding: 2rem;
+    box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.1);
+    margin-top: 3rem;
+}
+
+.heading {
+    font-family: 'CinnamonCoffeCake';
+    margin: auto;
+    padding: .7rem;
+    background-color: rgba(152, 163, 108, 0.9);
+    width: clamp(18rem, 50vw, 40rem);
+    border-radius: 1rem;
+    color: var(--white);
 }
 
 h1 {
     font-size: clamp(2rem, 8vw, 3rem);
     text-align: center;
+    color: var(--text);
 }
 
 h2 {
     font-size: clamp(1.5rem, 8vw, 2.3rem);
+    color: var(--text);
 }
 
-p, label, span {
-    font-size: clamp(1.2rem, 8vw, 2rem);
+p,
+label,
+span {
+    font-size: clamp(1.5rem, 4vw, 2rem);
     margin: 0;
+    color: var(--text);
 }
 
 a {
     text-decoration: none;
-    color: black;
+    color: var(--text);
 }
 
 ul {
@@ -45,10 +77,10 @@ ul {
     margin: 0;
 }
 
-img{
+img {
     display: block;
 }
 
-.no-linebreak{
+.no-linebreak {
     white-space: nowrap;
 }
