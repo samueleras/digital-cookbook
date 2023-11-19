@@ -86,6 +86,12 @@
     background-size: 100%;
 }
 
+.staricon{
+    width: 2rem;
+    display: inline-block;
+    vertical-align: text-bottom;
+}
+
 #edit{
     background: url(icons/edit.svg) no-repeat;
 }

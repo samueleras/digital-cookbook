@@ -32,6 +32,12 @@ main{
     font-size: 1rem;
 }
 
+.staricon{
+    width: 2rem;
+    display: inline-block;
+    vertical-align: text-bottom;
+}
+
 .form button[type="submit"] {
     background-color: rgb(36, 126, 66);
     border: none;

@@ -15,17 +15,22 @@
                             <picture>
                                 <source media="(min-width: 400px)" srcset="<%= recipe.image_link %>_desktop.webp">
                                 <source media="(min-width: 2560px)" srcset="<%= recipe.image_link %>_maxres.webp">
-                                <img style="width: 100%; aspect-ratio: 1;" src="<%= recipe.image_link %>_mobile.webp" alt="">
-                              </picture>
+                                <img style="width: 100%; aspect-ratio: 1;" src="<%= recipe.image_link %>_mobile.webp"
+                                    alt="">
+                            </picture>
                         </div>
                         <div class=" recipe-info">
                             <h2>
                                 <%= recipe.name %>
                             </h2>
                             <% if( typeof users !='undefined' ) { %>
-
-                                <p>Rating: <%= recipe.rating %> (<%= recipe.ratings.length %>)</p>
-
+                                <p>Rating:
+                                    <% let x = Math.floor(recipe.rating);
+                                    for (let i = 0; i < x; i++) { %><img class="staricon" src="/icons/star.svg" alt=""><% }
+                                    if(recipe.rating%1 > 0.75) { %><img class="staricon" src="/icons/star.svg" alt="">
+                                    <% } else if(recipe.rating%1 > 0.25) { %><img class="staricon" src="/icons/halfstar.svg" alt=""><% } %>
+                                    (<%= recipe.ratings.length %>)
+                                </p>
                                 <% if( typeof currentUser !='undefined' ) { %>
                                     <% let currentUsersRating="" ; %>
                                         <% let ratingLabel="Rate this recipe:" ; %>

@@ -57,7 +57,13 @@
                                             <h2>
                                                 <%= recipes[i].name %>
                                             </h2>
-                                            <p>Rating: <%= recipes[i].rating %> (<%= recipes[i].ratings.length %>)</p>
+                                            <p>Rating:
+                                                <% let x = Math.floor(recipes[i].rating); 
+                                                for (let i = 0; i < x; i++) { %><img class="staricon" src="/icons/star.svg" alt=""><% }
+                                                if(recipes[i].rating%1 > 0.75) { %><img class="staricon" src="/icons/star.svg" alt="">
+                                                <% } else if(recipes[i].rating%1 > 0.25) { %><img class="staricon" src="/icons/halfstar.svg" alt=""><% } %>
+                                                (<%= recipes[i].ratings.length %>)
+                                            </p>
                                             <p>Preparation Time: <span class="no-linebreak">
                                                     <%= recipes[i].preparation_time %> min
                                                 </span></p>
