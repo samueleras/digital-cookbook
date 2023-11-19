@@ -12,9 +12,6 @@ body {
     padding: 0;
     font-family: Georgia, 'Times New Roman', Times, serif;
     background-color: var(--body-background);
-    /*     background-image: url(/page_images/banner.svg);
-    background-repeat: no-repeat;
-    background-size: cover; */
 }
 
 :root {

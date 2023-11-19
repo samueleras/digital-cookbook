@@ -50,7 +50,7 @@ main{
 
 .recipe-actions {
     position: absolute;
-    top: 100vw;
+    top: calc(100vw + 1rem);
     right: 1rem;
 
 }
