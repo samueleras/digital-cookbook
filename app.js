@@ -212,17 +212,19 @@ app.post('/create-edit-submit', checkLogin, async (req, res) => {
         let image_link = default_image_link;
         let image_name = uuid();
 
-        const image = req.files.image;
-        if (image && /^image/.test(image.mimetype)) {
-            image_link = '/recipe_images/uploaded' + image_name;
-            let absolute_image_link = __dirname + "/public" + image_link;
-            const task1 = sharp(image.data).rotate().resize(100, 100).toFile(absolute_image_link + "_mobile.webp");
-            const task2 = sharp(image.data).rotate().resize(640, 640).toFile(absolute_image_link + "_desktop.webp");
-            const task3 = sharp(image.data).rotate().toFile(absolute_image_link + "_maxres.webp");
-            await task1;
-            await task2;
-            await task3;
-        }
+        try {
+            const image = req.files.image;
+            if (image && /^image/.test(image.mimetype)) {
+                image_link = '/recipe_images/uploaded' + image_name;
+                let absolute_image_link = __dirname + "/public" + image_link;
+                const task1 = sharp(image.data).rotate().resize(100, 100).toFile(absolute_image_link + "_mobile.webp");
+                const task2 = sharp(image.data).rotate().resize(640, 640).toFile(absolute_image_link + "_desktop.webp");
+                const task3 = sharp(image.data).rotate().toFile(absolute_image_link + "_maxres.webp");
+                await task1;
+                await task2;
+                await task3;
+            }
+        } catch { /* no image uploaded... using default */ }
 
         let recipe;
 
@@ -399,9 +401,6 @@ const send404 = (res, req) => {
 
 
 //TODO
-//Background image for Heading
-
-//Make final Styling
 
 //Adjust about page, maybe with Images
 //Adjust readme file
