@@ -25,11 +25,14 @@
                             </h2>
                             <% if( typeof users !='undefined' ) { %>
                                 <p>Rating:
-                                    <% let x = Math.floor(recipe.rating);
-                                    for (let i = 0; i < x; i++) { %><img class="staricon" src="/icons/star.svg" alt=""><% }
-                                    if(recipe.rating%1 > 0.75) { %><img class="staricon" src="/icons/star.svg" alt="">
-                                    <% } else if(recipe.rating%1 > 0.25) { %><img class="staricon" src="/icons/halfstar.svg" alt=""><% } %>
-                                    (<%= recipe.ratings.length %>)
+                                    <% let x=Math.floor(recipe.rating); for (let i=0; i < x; i++) { %><img
+                                            class="staricon" src="/icons/star.svg" alt="">
+                                        <% } if(recipe.rating%1> 0.75) { %><img class="staricon" src="/icons/star.svg"
+                                                alt="">
+                                            <% } else if(recipe.rating%1> 0.25) { %><img class="staricon"
+                                                    src="/icons/halfstar.svg" alt="">
+                                                <% } %>
+                                                    (<%= recipe.ratings.length %>)
                                 </p>
                                 <% if( typeof currentUser !='undefined' ) { %>
                                     <% let currentUsersRating="" ; %>
@@ -99,20 +102,16 @@
 
                     <% if( typeof currentUser !='undefined' && recipe.created_by==currentUser.userid ) { %>
                         <div class="recipe-actions">
-                            <a id="edit" href="/recipe/edit/<%= recipe._id %>"></a>
-                            <a id="delete" href="/recipe/delete/<%= recipe._id %>"></a>
+                            <a class="edit" href="/recipe/edit/<%= recipe._id %>"></a>
+                            <a class="delete" href="/recipe/delete/<%= recipe._id %>"></a>
                         </div>
                         <% } %>
                             <% if( typeof currentUser !='undefined' && recipe.created_by !=currentUser.userid ) { %>
                                 <div class="recipe-actions">
-                                    <% let save="false" ; let unsave="true" ; if(
-                                        !currentUser.saved_recipes.includes(recipe._id) ) { save="true" ;unsave="false"
-                                        ; } %>
-                                        <a id="save" display="<%= save %>"
-                                            onclick='saveRecipe("/recipe/save/<%= recipe._id %>")'
-                                            href="javascript:void(0);"></a>
-                                        <a id="unsave" display="<%= unsave %>"
-                                            onclick='saveRecipe("/recipe/unsave/<%= recipe._id %>")'
+                                    <% let save="unsave" ; if( !currentUser.saved_recipes.includes(recipe._id) ) {
+                                        save="save" ; } %>
+                                        <a id="savetoggle_<%= recipe._id %>" class="<%= save %>"
+                                            onclick='saveRecipe("<%= recipe._id %>")'
                                             href="javascript:void(0);"></a>
                                 </div>
                                 <% } %>

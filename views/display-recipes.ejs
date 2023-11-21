@@ -81,8 +81,8 @@
                                     <% if( typeof currentUser !='undefined' && recipes[i].created_by==currentUser.userid
                                         ) { %>
                                         <div class="recipe-actions">
-                                            <a id="edit" href="/recipe/edit/<%= recipes[i]._id %>"></a>
-                                            <a id="delete"
+                                            <a class="edit" href="/recipe/edit/<%= recipes[i]._id %>"></a>
+                                            <a class="delete"
                                                 onclick='deleteRecipe("/recipe/delete/<%= recipes[i]._id %>", this.parentElement.parentElement)'
                                                 href="javascript:void(0);"></a>
                                         </div>
@@ -90,14 +90,11 @@
                                             <% if( typeof currentUser !='undefined' && recipes[i].created_by
                                                 !=currentUser.userid ) { %>
                                                 <div class="recipe-actions">
-                                                    <% let save="false" ; let unsave="true" ; if(
+                                                    <% let save="unsave"; if(
                                                         !currentUser.saved_recipes.includes(recipes[i]._id) ) {
-                                                        save="true" ;unsave="false" ; } %>
-                                                        <a id="save" display="<%= save %>"
-                                                            onclick='saveRecipe("/recipe/save/<%= recipes[i]._id %>")'
-                                                            href="javascript:void(0);"></a>
-                                                        <a id="unsave" display="<%= unsave %>"
-                                                            onclick='saveRecipe("/recipe/unsave/<%= recipes[i]._id %>")'
+                                                        save="save"; } %>
+                                                        <a id="savetoggle_<%= recipes[i]._id %>" class="<%= save %>"
+                                                            onclick='saveRecipe("<%= recipes[i]._id %>")'
                                                             href="javascript:void(0);"></a>
                                                 </div>
                                                 <% } %>

@@ -3,16 +3,19 @@
 const savebutton = document.querySelector('#save');
 const unsavebutton = document.querySelector('#unsave');
 
-const saveRecipe = async (url, page) => {
+const saveRecipe = async (id) => {
 
-    await fetch(url);
+    const button = document.querySelector(`#savetoggle_${id}`);
 
-    if( savebutton.getAttribute("display") == "false"){
-        savebutton.setAttribute("display", true);
-        unsavebutton.setAttribute("display", false);
+    let url;
+
+    if( button.getAttribute("class") == "save"){
+        button.setAttribute("class", "unsave");
+        url = `/recipe/save/${id}`;
     } else {
-        savebutton.setAttribute("display", false);
-        unsavebutton.setAttribute("display", true);
+        button.setAttribute("class", "save");
+        url = `/recipe/unsave/${id}`;
     }
 
+    await fetch(url);
 }

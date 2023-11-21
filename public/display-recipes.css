@@ -92,19 +92,19 @@
     vertical-align: text-bottom;
 }
 
-#edit{
+.edit{
     background: url(icons/edit.svg) no-repeat;
 }
 
-#delete{
+.delete{
     background: url(icons/delete.svg) no-repeat;
 }
 
-#save{
+.save{
     background: url(icons/like.svg) no-repeat;
 }
 
-#unsave{
+.unsave{
     background: url(icons/unlike.svg) no-repeat;
 }
 
