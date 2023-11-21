@@ -18,6 +18,7 @@ main{
 
 .recipe-info h2 {
     margin-top: 0.5rem;
+    padding-right: 4rem;
 }
 
 #rating {
@@ -102,11 +103,12 @@ main{
     .flex-container-recipeheader {
         display: grid;
         grid-template-columns: 25rem auto;
-        align-items: center;
+        align-items: flex-start;
     }
 
     .recipe-image {
         flex-basis: 40%;
+        min-width: 40%;
     }
 
     .recipe-info {

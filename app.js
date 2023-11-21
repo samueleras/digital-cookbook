@@ -219,7 +219,7 @@ app.post('/create-edit-submit', checkLogin, async (req, res) => {
                 let absolute_image_link = __dirname + "/public" + image_link;
                 const task1 = sharp(image.data).rotate().resize(100, 100).toFile(absolute_image_link + "_mobile.webp");
                 const task2 = sharp(image.data).rotate().resize(640, 640).toFile(absolute_image_link + "_desktop.webp");
-                const task3 = sharp(image.data).rotate().toFile(absolute_image_link + "_maxres.webp");
+                const task3 = sharp(image.data).rotate().resize(2000, 2000).toFile(absolute_image_link + "_maxres.webp");
                 await task1;
                 await task2;
                 await task3;
@@ -401,6 +401,8 @@ const send404 = (res, req) => {
 
 
 //TODO
+
+//Fix saving recipe display bug
 
 //Adjust about page, maybe with Images
 //Adjust readme file

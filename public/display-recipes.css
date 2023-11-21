@@ -140,14 +140,17 @@ a[display=false]{
 
     .flex-container-recipe {
         display: flex;
+        height: 100%;
     }
 
     .recipe-image{
         flex-basis: 40%;
+        min-width: 40%;
     }
 
     .recipe-info{
         margin-left: 2rem;
+        overflow: hidden;
     }
 
     #search-input::placeholder{
