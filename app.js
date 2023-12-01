@@ -86,11 +86,6 @@ app.get('/recipe/display/:id', async (req, res) => {
     }
 });
 
-// informatin of how the site works
-app.get('/about', (req, res) => {
-    res.render('about', { title: 'About', defaultstyle: 'yes', stylefile: 'about', jsfile: 'no', currentUser: req.user ??= undefined });
-});
-
 // login
 app.get('/login', (req, res) => {
     res.render('login', { title: 'Login/SignUp', defaultstyle: 'yes', stylefile: 'login-signup', jsfile: 'login' });
@@ -398,11 +393,3 @@ app.use((req, res) => {
 const send404 = (res, req) => {
     res.status(404).render('404', { title: 'Error - 404', defaultstyle: 'yes', stylefile: '404', jsfile: 'no', currentUser: req.user ??= undefined });
 }
-
-
-//TODO
-
-//Fix saving recipe display bug
-
-//Adjust about page, maybe with Images
-//Adjust readme file
