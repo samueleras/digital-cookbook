@@ -351,7 +351,7 @@ app.get('/saved-recipes/:params', checkLogin, async (req, res) => {
         const searchparam = params.searchparam ??= '';
         const recipes = await Recipe.find({ '_id': { $in: req.user.saved_recipes }, 'name': { $regex: '.*' + searchparam + '.*', $options: 'i' } }).sort(sorting);
         const users = await User.find();
-        res.render('display-recipes', { title: 'All Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, users, currentUser: req.user ??= undefined, page: page, sorting, searchparam: searchparam });
+        res.render('display-recipes', { title: 'Saved Recipes', defaultstyle: 'yes', stylefile: 'display-recipes', jsfile: 'display-recipes', recipes, users, currentUser: req.user ??= undefined, page: page, sorting, searchparam: searchparam });
     } catch (err) {
         console.log("Failed to display saved-recipes. " + err);
         send404(res, req);
