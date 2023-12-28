@@ -46,12 +46,8 @@
                                 <div class="recipe">
                                     <a class="flex-container-recipe" href="/recipe/display/<%= recipes[i]._id %>">
                                         <div class="recipe-image">
-                                            <picture>
-                                                <source media="(min-width: 400px)"
-                                                    srcset="<%= recipes[i].image_link %>_desktop.webp">
-                                                <img style="width: 100%; aspect-ratio: 1;"
-                                                    src="<%= recipes[i].image_link %>_mobile.webp" alt="">
-                                            </picture>
+                                            <img style="width: 100%; aspect-ratio: 1;" src="<%= recipes[i].image_link %>_desktop.webp"
+                                                alt="">
                                         </div>
                                         <div class="recipe-info">
                                             <h2>
