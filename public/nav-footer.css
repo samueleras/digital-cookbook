@@ -44,6 +44,7 @@ nav button{
     background: url(icons/menu.svg) no-repeat;
     background-size: 100%;
     height: 2.4rem;
+    width: 2.4rem;
     aspect-ratio: 1;
     border: none;
     position: fixed;
