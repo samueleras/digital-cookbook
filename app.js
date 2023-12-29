@@ -212,10 +212,10 @@ app.post('/create-edit-submit', checkLogin, async (req, res) => {
             if (image && /^image/.test(image.mimetype)) {
                 image_link = '/recipe_images/uploaded' + image_name;
                 let absolute_image_link = __dirname + "/public" + image_link;
-                const task1 = sharp(image.data).rotate().resize(640, 640).toFile(absolute_image_link + "_desktop.webp");
-                const task2 = sharp(image.data).rotate().resize(2000, 2000).toFile(absolute_image_link + "_maxres.webp");
-                await task1;
-                await task2;
+                const task1 = sharp(image.data).rotate().resize(400, 400).toFile(absolute_image_link + "_mobile.webp");
+                const task2 = sharp(image.data).rotate().resize(640, 640).toFile(absolute_image_link + "_desktop.webp");
+                const task3 = sharp(image.data).rotate().resize(2000, 2000).toFile(absolute_image_link + "_maxres.webp");
+                await Promise.all([task1, task2, task3]);
             }
         } catch { /* no image uploaded... using default */ }
 
