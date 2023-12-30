@@ -13,8 +13,8 @@
                     <div class="flex-container-recipeheader">
                         <div class="recipe-image">
                             <picture>
-                                <source media="(min-width: 400px)" srcset="<%= recipe.image_link %>_desktop.webp">
                                 <source media="(min-width: 2560px)" srcset="<%= recipe.image_link %>_maxres.webp">
+                                <source media="(min-width: 400px)" srcset="<%= recipe.image_link %>_desktop.webp">
                                 <img style="width: 100%; aspect-ratio: 1;" src="<%= recipe.image_link %>_mobile.webp"
                                     alt="">
                             </picture>
